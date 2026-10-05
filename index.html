@@ -1,2027 +1,492 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TrigoLab Interaktif - Lab Maya Grafik Fungsi Trigonometri</title>
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@500;600&display=swap" rel="stylesheet">
-    
-    <!-- KaTeX for Precise Math Formula Rendering -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-
-    <style>
-        * {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            background-color: #f8fafc;
-            color: #0f172a;
-            overflow-x: hidden;
-        }
-        .math-font {
-            font-family: 'Fira Code', monospace;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        /* Custom range slider styling for touch accessibility */
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-        input[type=range]:focus {
-            outline: none;
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 8px;
-            cursor: pointer;
-            background: #e2e8f0;
-            border-radius: 999px;
-            border: 1px solid #cbd5e1;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            height: 22px;
-            width: 22px;
-            border-radius: 50%;
-            background: #2563eb;
-            cursor: pointer;
-            -webkit-appearance: none;
-            margin-top: -7px;
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
-            border: 2px solid #ffffff;
-        }
-        input[type=range]:active::-webkit-slider-thumb {
-            background: #1d4ed8;
-            transform: scale(1.15);
-        }
-        .clean-panel {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-        .canvas-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            min-height: 260px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GrafikaLab – Lab Maya Grafik Fungsi</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
+<style>
+:root{--bg:#f6f4ee;--card:#fff;--ink:#16202a;--mut:#64707d;--line:#e3dfd3;--acc:#0f766e}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#10171c;--card:#18222a;--ink:#e8eef2;--mut:#93a1ad;--line:#2a3742;--acc:#2dd4bf}}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{background:var(--bg);color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.mono{font-family:'Fira Code',monospace}
+.tab{padding:6px 12px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:600;background:var(--card);cursor:pointer}
+.tab.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+canvas{touch-action:none;width:100%;height:100%;display:block}
+.row{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.row b{font-family:'Fira Code',monospace;font-weight:500;text-align:right}
+math{font-family:"STIX Two Math","Cambria Math","Latin Modern Math","Noto Sans Math",serif;font-size:1.12em}
+.row b math{font-size:1em}
+.hidden{display:none}
+.splash{position:fixed;inset:0;z-index:60;background:radial-gradient(circle at 30% 20%,#115e59,#0b1a22 70%);color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;transition:opacity .6s}
+.splash.out{opacity:0;pointer-events:none}
+.splash h1{font-size:clamp(40px,9vw,72px);font-weight:800;letter-spacing:-1px}.splash h1 span{color:#5eead4}
+.draw{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:700;stroke-dashoffset:700;animation:dr 2.8s ease forwards}
+.d2{stroke:#fbbf24;animation-delay:.5s}
+@keyframes dr{to{stroke-dashoffset:0}}
+.lbar{height:8px;border-radius:99px;background:rgba(255,255,255,.15);overflow:hidden;margin:18px auto 8px;max-width:320px}
+.lbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5eead4,#fbbf24);transition:width .15s}
+.cta{margin-top:16px;padding:12px 26px;border-radius:99px;background:#5eead4;color:#042f2e;font-weight:800;cursor:pointer;animation:pop .5s}
+@keyframes pop{from{transform:scale(.8);opacity:0}}
+.modal{position:fixed;inset:0;z-index:50;background:rgba(5,15,20,.6);display:flex;align-items:center;justify-content:center;padding:14px}
+.modal>div{max-height:88vh;overflow:auto;max-width:640px;width:100%;padding:22px}
+.mt{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.mt small{display:block;color:var(--mut);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.q{padding:14px;margin-bottom:10px}.q label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:8px;cursor:pointer;font-size:14px}
+.q label:hover{background:var(--bg)}.good{background:rgba(22,163,74,.15)!important}.bad{background:rgba(220,38,38,.15)!important}
+textarea{width:100%;min-height:80px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg);color:var(--ink);font:inherit}
+.na{color:var(--mut);font-style:italic;font-size:11px}
+#twt td{padding:3px 12px;text-align:right}#twt tr:hover,#twt tr.sel{background:rgba(37,99,235,.16)}
+#tw input,#tw select{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:1px 3px;font-size:12px}
+</style>
 </head>
-<body class="h-full flex flex-col justify-between select-none bg-slate-50 text-slate-900">
-
-    <!-- COVER / SPLASH SCREEN -->
-    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white p-6 text-center transition-opacity duration-500 shadow-2xl">
-        <div class="relative mb-6">
-            <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl bg-blue-50 border-2 border-blue-200 flex items-center justify-center text-blue-600 shadow-lg">
-                <i class="fa-solid fa-wave-square text-4xl animate-pulse"></i>
-            </div>
-        </div>
-        
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold mb-3">
-            <i class="fa-solid fa-flask"></i> Lab Maya Matematika Interaktif
-        </div>
-        
-        <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-3">
-            TrigoLab <span class="text-blue-600">Interaktif</span>
-        </h1>
-        
-        <p class="text-slate-600 max-w-lg text-sm md:text-base mb-6 leading-relaxed">
-            Eksplorasi Pembentukan & Transformasi Grafik Fungsi Trigonometri Berbasis Strategi Penemuan Terbimbing (Guided Discovery).
-        </p>
-
-        <!-- Loading Indicator to Start Button -->
-        <div id="splash-loading-box" class="w-64 bg-slate-100 h-2 rounded-full overflow-hidden mb-6 border border-slate-200">
-            <div id="loading-bar" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
-        </div>
-
-        <button id="btn-start-app" onclick="startApp()" class="hidden px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-base shadow-lg shadow-blue-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95 flex items-center gap-3">
-            <span>Mulai Eksplorasi Lab Maya</span>
-            <i class="fa-solid fa-arrow-right"></i>
-        </button>
-
-        <div class="mt-8 pt-6 border-t border-slate-100 text-xs text-slate-500">
-            Pengembang Media: <span class="text-slate-800 font-bold">I Made Agus Suputrayasa</span>
-        </div>
-    </div>
-
-    <!-- APPLICATION HEADER -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 px-3 py-2.5 md:px-6 shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-2 md:gap-3">
-                <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-                    <i class="fa-solid fa-chart-line text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="text-base md:text-lg font-bold text-slate-900 tracking-tight leading-none">TrigoLab</h1>
-                    <span class="text-[10px] md:text-xs text-blue-600 font-medium">Lab Maya Grafik Trigonometri</span>
-                </div>
-            </div>
-
-            <!-- Main Navigation Tabs (Desktop) -->
-            <nav class="hidden md:flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                <button onclick="switchTab('lab')" id="nav-lab" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-sm">
-                    <i class="fa-solid fa-flask mr-1.5"></i>Lab Maya
-                </button>
-                <button onclick="switchTab('materi')" id="nav-materi" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
-                    <i class="fa-solid fa-book-open mr-1.5"></i>Materi
-                </button>
-                <button onclick="switchTab('tantangan')" id="nav-tantangan" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
-                    <i class="fa-solid fa-gamepad mr-1.5"></i>Tantangan
-                </button>
-                <button onclick="switchTab('evaluasi')" id="nav-evaluasi" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
-                    <i class="fa-solid fa-clipboard-check mr-1.5"></i>Evaluasi
-                </button>
-                <button onclick="switchTab('refleksi')" id="nav-refleksi" class="nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900">
-                    <i class="fa-solid fa-pen-to-square mr-1.5"></i>Refleksi
-                </button>
-            </nav>
-
-            <!-- Action Controls -->
-            <div class="flex items-center gap-1.5 md:gap-2">
-                <button onclick="openModal('info-modal')" title="Informasi & Petunjuk" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition border border-slate-200 active:scale-95">
-                    <i class="fa-solid fa-circle-info text-sm"></i>
-                </button>
-                <button onclick="toggleFullscreen()" title="Layar Penuh" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition border border-slate-200 active:scale-95">
-                    <i id="fullscreen-icon" class="fa-solid fa-expand text-sm"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
-    <main class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 md:p-6 flex flex-col justify-between overflow-y-auto">
-        
-        <!-- ================= TAB 1: LAB MAYA ================= -->
-        <section id="tab-lab" class="tab-content flex flex-col gap-4">
-            
-            <!-- Subtab Switcher -->
-            <div class="flex items-center justify-between bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
-                <div class="grid grid-cols-2 gap-1 w-full sm:w-auto">
-                    <button onclick="switchLabSubtab('unit-circle')" id="subtab-unit-circle" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 bg-blue-600 text-white shadow-sm">
-                        <i class="fa-solid fa-circle-notch"></i>
-                        <span>1. Lingkaran Satuan</span>
-                    </button>
-                    <button onclick="switchLabSubtab('transform')" id="subtab-transform" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
-                        <i class="fa-solid fa-sliders"></i>
-                        <span>2. Karakteristik & Transformasi</span>
-                    </button>
-                </div>
-                <div class="hidden lg:flex items-center gap-2 text-xs text-slate-500 pr-2">
-                    <i class="fa-solid fa-lightbulb text-amber-500"></i>
-                    <span>Eksplorasi perubahan grafik secara dinamis di bawah</span>
-                </div>
-            </div>
-
-            <!-- SUBTAB 1: UNIT CIRCLE TO GRAPH -->
-            <div id="subtab-content-circle" class="flex flex-col gap-4">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                    
-                    <!-- Visualizer Canvas Panel -->
-                    <div class="lg:col-span-8 clean-panel rounded-2xl p-3 md:p-4 flex flex-col gap-3 relative">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                            <span class="text-xs font-bold uppercase tracking-wider text-blue-600 flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-blue-600 animate-ping"></span>
-                                Visualisasi Proyeksi Lingkaran Satuan
-                            </span>
-                            <button onclick="resetUnitCircle()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition border border-slate-200 font-semibold">
-                                <i class="fa-solid fa-rotate-left mr-1"></i>Reset
-                            </button>
-                        </div>
-
-                        <!-- Canvas Container -->
-                        <div class="canvas-container h-[290px] sm:h-[350px] md:h-[390px] bg-white rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center shadow-inner">
-                            <canvas id="unitCircleCanvas" class="w-full h-full cursor-crosshair"></canvas>
-                        </div>
-
-                        <!-- Touch Control Bar -->
-                        <div class="flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <div class="flex items-center gap-3 w-full sm:w-auto">
-                                <button id="btn-play-circle" onclick="togglePlayCircle()" class="w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center font-bold shadow-md active:scale-95 transition shrink-0">
-                                    <i id="icon-play-circle" class="fa-solid fa-play"></i>
-                                </button>
-                                <div class="text-left min-w-[100px]">
-                                    <div class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Sudut ($\theta$)</div>
-                                    <div id="display-angle" class="text-sm font-bold text-blue-700 math-font">0° (0.00 rad)</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex-1 w-full flex items-center gap-2">
-                                <span class="text-xs font-bold text-slate-500 math-font">0°</span>
-                                <input type="range" id="slider-angle" min="0" max="360" value="0" step="1" oninput="onAngleSliderChange(this.value)" class="flex-1">
-                                <span class="text-xs font-bold text-slate-500 math-font">360°</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Control & Discovery Guided Panel -->
-                    <div class="lg:col-span-4 flex flex-col gap-4">
-                        <!-- Function Selection Panel -->
-                        <div class="clean-panel rounded-2xl p-4">
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Pilih Fungsi Trigonometri</h3>
-                            <div class="grid grid-cols-3 gap-2">
-                                <button onclick="setCircleFunction('sin')" id="btn-func-sin" class="func-btn py-2.5 rounded-xl font-bold text-xs sm:text-sm transition border border-blue-500 bg-blue-50 text-blue-700 shadow-sm">
-                                    Sin ($\sin$)
-                                </button>
-                                <button onclick="setCircleFunction('cos')" id="btn-func-cos" class="func-btn py-2.5 rounded-xl font-bold text-xs sm:text-sm transition border border-slate-200 bg-white text-slate-600 hover:bg-slate-50">
-                                    Cos ($\cos$)
-                                </button>
-                                <button onclick="setCircleFunction('tan')" id="btn-func-tan" class="func-btn py-2.5 rounded-xl font-bold text-xs sm:text-sm transition border border-slate-200 bg-white text-slate-600 hover:bg-slate-50">
-                                    Tan ($\tan$)
-                                </button>
-                            </div>
-                            
-                            <div id="function-values-card" class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-2">
-                                <div class="flex justify-between items-center">
-                                    <span class="text-slate-600 font-medium">Titik $P(x,y) = (\cos\theta, \sin\theta)$:</span>
-                                    <span id="val-p-coord" class="math-font font-bold text-slate-900">(1.00, 0.00)</span>
-                                </div>
-                                <div class="flex justify-between items-center pt-1 border-t border-slate-200">
-                                    <span class="text-slate-600 font-medium">Nilai Hasil Fungsi:</span>
-                                    <span id="val-func-output" class="math-font font-bold text-blue-600">$\sin(0^\circ) = 0.00$</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Guided Discovery Prompt Card -->
-                        <div class="clean-panel rounded-2xl p-4 flex-1 flex flex-col justify-between bg-gradient-to-b from-blue-50/50 to-white">
-                            <div>
-                                <div class="flex items-center gap-2 text-amber-600 font-bold text-xs uppercase tracking-wider mb-2">
-                                    <i class="fa-solid fa-compass"></i>
-                                    <span>Panduan Penemuan</span>
-                                </div>
-                                <h4 id="prompt-title" class="font-bold text-sm text-slate-900 mb-2">Mengamati Pembentukan Grafik Sinus</h4>
-                                <p id="prompt-desc" class="text-xs text-slate-600 leading-relaxed mb-3">
-                                    Geser slider sudut $\theta$ dari $0^\circ$ hingga $360^\circ$. Perhatikan bagaimana nilai koordinat-$y$ (tinggi vertikal) dari titik $P$ ditransfer membentuk kurva gelombang sinus.
-                                </p>
-                            </div>
-                            <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                                <p class="text-[11px] text-amber-900 font-medium leading-relaxed">
-                                    <i class="fa-solid fa-circle-question text-amber-600 mr-1"></i>
-                                    <span id="prompt-question">Di sudut manakah grafik mencapai nilai puncak maksimum ($+1$) dan lembah minimum ($-1$)?</span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SUBTAB 2: CHARACTERISTICS & TRANSFORMATIONS -->
-            <div id="subtab-content-transform" class="hidden flex flex-col gap-4">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                    
-                    <!-- Graph Canvas Panel -->
-                    <div class="lg:col-span-8 clean-panel rounded-2xl p-3 md:p-4 flex flex-col gap-3 relative">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2">
-                            <div>
-                                <div class="text-xs font-bold uppercase tracking-wider text-blue-600 flex items-center gap-2">
-                                    <i class="fa-solid fa-chart-line"></i>
-                                    Persamaan Grafik Hasil Transformasi
-                                </div>
-                                <div id="display-equation-math" class="text-base sm:text-lg font-bold text-slate-900 mt-1 math-font">
-                                    <!-- Rendered dynamically -->
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <label class="text-xs text-slate-600 flex items-center gap-1.5 cursor-pointer bg-slate-100 px-2.5 py-1.5 rounded-lg border border-slate-200">
-                                    <input type="checkbox" id="check-ref-graph" checked onchange="drawTransformGraph()" class="rounded border-slate-300 text-blue-600 focus:ring-0">
-                                    <span id="ref-graph-label" class="font-semibold">Tampilkan Acuan $y = \sin(x)$</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Canvas Container -->
-                        <div class="canvas-container h-[280px] sm:h-[340px] md:h-[380px] bg-white rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center shadow-inner">
-                            <canvas id="transformCanvas" class="w-full h-full"></canvas>
-                        </div>
-
-                        <!-- Summary Cards for Parameters -->
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-center">
-                                <span class="text-[10px] text-slate-500 uppercase font-bold block">Amplitudo ($|A|$)</span>
-                                <span id="stat-amp" class="text-sm font-bold text-blue-600 math-font">1.0</span>
-                            </div>
-                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-center">
-                                <span class="text-[10px] text-slate-500 uppercase font-bold block">Periode ($T$)</span>
-                                <span id="stat-period" class="text-sm font-bold text-emerald-600 math-font">360° ($2\pi$)</span>
-                            </div>
-                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-center">
-                                <span class="text-[10px] text-slate-500 uppercase font-bold block">Geser Fase ($C$)</span>
-                                <span id="stat-phase" class="text-sm font-bold text-purple-600 math-font">0°</span>
-                            </div>
-                            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 text-center">
-                                <span class="text-[10px] text-slate-500 uppercase font-bold block">Geser Vertikal ($D$)</span>
-                                <span id="stat-vert" class="text-sm font-bold text-amber-600 math-font">0.0</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sliders Panel for A, B, C, D -->
-                    <div class="lg:col-span-4 clean-panel rounded-2xl p-4 flex flex-col justify-between gap-4">
-                        <div>
-                            <div class="flex justify-between items-center mb-3">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Manipulasi Parameter</h3>
-                                <button onclick="resetSliders()" class="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1">
-                                    <i class="fa-solid fa-rotate-left"></i> Reset
-                                </button>
-                            </div>
-
-                            <!-- Base Function Toggle -->
-                            <div class="mb-4">
-                                <label class="text-[11px] text-slate-500 font-bold uppercase block mb-1.5">Fungsi Utama</label>
-                                <div class="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
-                                    <button onclick="setTransformFunc('sin')" id="btn-trans-sin" class="trans-func-btn py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm">$y = \sin(x)$</button>
-                                    <button onclick="setTransformFunc('cos')" id="btn-trans-cos" class="trans-func-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">$y = \cos(x)$</button>
-                                    <button onclick="setTransformFunc('tan')" id="btn-trans-tan" class="trans-func-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">$y = \tan(x)$</button>
-                                </div>
-                            </div>
-
-                            <!-- Slider A: Amplitudo -->
-                            <div class="space-y-1 mb-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                                <div class="flex justify-between text-xs">
-                                    <span class="font-bold text-blue-700">Parameter A (Amplitudo)</span>
-                                    <span id="val-slider-a" class="math-font font-bold text-slate-900">1.0</span>
-                                </div>
-                                <input type="range" id="slider-a" min="-3" max="3" step="0.5" value="1" oninput="updateTransformParams()">
-                            </div>
-
-                            <!-- Slider B: Periode -->
-                            <div class="space-y-1 mb-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                                <div class="flex justify-between text-xs">
-                                    <span class="font-bold text-emerald-700">Parameter B (Frekuensi/Periode)</span>
-                                    <span id="val-slider-b" class="math-font font-bold text-slate-900">1.0</span>
-                                </div>
-                                <input type="range" id="slider-b" min="0.25" max="3" step="0.25" value="1" oninput="updateTransformParams()">
-                            </div>
-
-                            <!-- Slider C: Pergeseran Fase -->
-                            <div class="space-y-1 mb-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                                <div class="flex justify-between text-xs">
-                                    <span class="font-bold text-purple-700">Parameter C (Geser Kanan/Kiri)</span>
-                                    <span id="val-slider-c" class="math-font font-bold text-slate-900">0°</span>
-                                </div>
-                                <input type="range" id="slider-c" min="-180" max="180" step="15" value="0" oninput="updateTransformParams()">
-                            </div>
-
-                            <!-- Slider D: Pergeseran Vertikal -->
-                            <div class="space-y-1 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                                <div class="flex justify-between text-xs">
-                                    <span class="font-bold text-amber-700">Parameter D (Geser Atas/Bawah)</span>
-                                    <span id="val-slider-d" class="math-font font-bold text-slate-900">0.0</span>
-                                </div>
-                                <input type="range" id="slider-d" min="-2" max="2" step="0.5" value="0" oninput="updateTransformParams()">
-                            </div>
-                        </div>
-
-                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 leading-relaxed">
-                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i>
-                            <strong>Petunjuk:</strong> Geser satu slider saja terlebih dahulu untuk mengamati secara spesifik pengaruh parameter tersebut terhadap bentuk atau posisi grafik.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= TAB 2: MATERI ================= -->
-        <section id="tab-materi" class="tab-content hidden flex flex-col gap-4 max-w-4xl mx-auto w-full">
-            
-            <!-- Header & Pagination Navigation Bar -->
-            <div class="clean-panel p-4 md:p-5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white">
-                <div>
-                    <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold mb-1">
-                        <i class="fa-solid fa-book-open"></i> Modul Pembelajaran
-                    </div>
-                    <h2 class="text-lg md:text-xl font-bold text-slate-900" id="materi-page-title">
-                        1. Konsep Lingkaran Satuan (Unit Circle)
-                    </h2>
-                </div>
-
-                <!-- Page Navigation Controls -->
-                <div class="flex items-center gap-2 self-end md:self-auto">
-                    <button id="btn-materi-prev" onclick="changeMateriPage(-1)" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition disabled:opacity-40 disabled:cursor-not-allowed">
-                        <i class="fa-solid fa-chevron-left"></i>
-                        <span>Sebelumnya</span>
-                    </button>
-                    <span id="materi-page-indicator" class="text-xs font-bold text-slate-700 math-font px-2.5 bg-slate-100 py-1.5 rounded-lg border border-slate-200">
-                        1 / 4
-                    </span>
-                    <button id="btn-materi-next" onclick="changeMateriPage(1)" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 transition shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
-                        <span>Selanjutnya</span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Page Step Indicator Tabs/Pills -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-slate-200/60 p-1 rounded-xl">
-                <button onclick="goToMateriPage(1)" id="materi-pill-1" class="materi-pill-btn py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold transition text-center truncate bg-white text-blue-700 shadow-sm border border-blue-200">
-                    1. Lingkaran Satuan
-                </button>
-                <button onclick="goToMateriPage(2)" id="materi-pill-2" class="materi-pill-btn py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold transition text-center truncate text-slate-600 hover:text-slate-900 border border-transparent">
-                    2. Karakteristik Utama
-                </button>
-                <button onclick="goToMateriPage(3)" id="materi-pill-3" class="materi-pill-btn py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold transition text-center truncate text-slate-600 hover:text-slate-900 border border-transparent">
-                    3. Transformasi Grafik
-                </button>
-                <button onclick="goToMateriPage(4)" id="materi-pill-4" class="materi-pill-btn py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold transition text-center truncate text-slate-600 hover:text-slate-900 border border-transparent">
-                    4. Rangkuman & Contoh
-                </button>
-            </div>
-
-            <!-- MATERI PAGES CONTAINER -->
-            <div class="clean-panel p-5 md:p-7 rounded-2xl min-h-[380px] flex flex-col justify-between">
-                
-                <!-- PAGE 1: Lingkaran Satuan -->
-                <div id="materi-page-1" class="materi-page flex flex-col gap-4">
-                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                        Lingkaran satuan (<em>Unit Circle</em>) merupakan dasar penting geometri trigonometri. Lingkaran ini berpusat di $(0,0)$ dengan jari-jari $r = 1$. Setiap titik pada keliling lingkaran mewakili sudut putar $\theta$.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-blue-50/70 border border-blue-200 p-4 rounded-xl space-y-2">
-                            <h3 class="font-bold text-sm text-blue-900 flex items-center gap-2">
-                                <i class="fa-solid fa-circle-dot text-blue-600"></i>
-                                Koordinat Titik $P(x,y)$
-                            </h3>
-                            <p class="text-xs text-slate-700 leading-relaxed">
-                                Untuk sembarang sudut $\theta$, koordinat $(x,y)$ didefinisikan sebagai:
-                            </p>
-                            <div class="p-3 bg-white rounded-lg border border-blue-100 text-xs font-semibold text-blue-800 math-font text-center shadow-sm">
-                                $$P(x,y) = (\cos\theta, \sin\theta)$$
-                            </div>
-                            <ul class="text-xs text-slate-600 space-y-1 list-disc pl-4 pt-1">
-                                <li>Panjang alas horizontal $x = \cos\theta$</li>
-                                <li>Tinggi tegak vertikal $y = \sin\theta$</li>
-                                <li>Rasio kemiringan $\tan\theta = \frac{\sin\theta}{\cos\theta} = \frac{y}{x}$</li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2">
-                            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
-                                <i class="fa-solid fa-table-cells text-slate-600"></i>
-                                Nilai Sudut Istimewa Kuadran I
-                            </h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-center text-xs border-collapse">
-                                    <thead>
-                                        <tr class="bg-slate-200/80 text-slate-800 font-bold">
-                                            <th class="p-1.5 border border-slate-300">$\theta$</th>
-                                            <th class="p-1.5 border border-slate-300">$0^\circ$</th>
-                                            <th class="p-1.5 border border-slate-300">$30^\circ$</th>
-                                            <th class="p-1.5 border border-slate-300">$45^\circ$</th>
-                                            <th class="p-1.5 border border-slate-300">$60^\circ$</th>
-                                            <th class="p-1.5 border border-slate-300">$90^\circ$</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="math-font text-slate-700 bg-white">
-                                        <tr>
-                                            <td class="p-1.5 border border-slate-200 font-bold text-blue-700">$\sin$</td>
-                                            <td class="p-1.5 border border-slate-200">$0$</td>
-                                            <td class="p-1.5 border border-slate-200">$\frac{1}{2}$</td>
-                                            <td class="p-1.5 border border-slate-200">$\frac{1}{2}\sqrt{2}$</td>
-                                            <td class="p-1.5 border border-slate-200">$\frac{1}{2}\sqrt{3}$</td>
-                                            <td class="p-1.5 border border-slate-200">$1$</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="p-1.5 border border-slate-200 font-bold text-emerald-700">$\cos$</td>
-                                            <td class="p-1.5 border border-slate-200">$1$</td>
-                                            <td class="p-1.5 border border-slate-200">$\frac{1}{2}\sqrt{3}$</td>
-                                            <td class="p-1.5 border border-slate-200">$\frac{1}{2}\sqrt{2}$</td>
-                                            <td class="p-1.5 border border-slate-200">$\frac{1}{2}$</td>
-                                            <td class="p-1.5 border border-slate-200">$0$</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 2: Karakteristik Utama -->
-                <div id="materi-page-2" class="materi-page hidden flex flex-col gap-4">
-                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                        Tiga fungsi dasar trigonometri memiliki pola gelombang dan sifat-sifat periodik yang khas saat digambarkan pada koordinat Kartesius.
-                    </p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <!-- Sinus Card -->
-                        <div class="bg-blue-50/60 border border-blue-200 p-3.5 rounded-xl space-y-2">
-                            <span class="px-2 py-0.5 bg-blue-600 text-white font-bold rounded text-[10px] uppercase tracking-wider">Fungsi Sinus</span>
-                            <div class="text-xs font-bold text-blue-900 math-font">y = sin(x)</div>
-                            <ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
-                                <li><strong>Dimulai dari:</strong> Titik asal $(0,0)$</li>
-                                <li><strong>Amplitudo dasar:</strong> $1$ (Rentang $[-1, 1]$)</li>
-                                <li><strong>Periode dasar ($T$):</strong> $360^\circ$ ($2\pi$ rad)</li>
-                                <li><strong>Puncak Maksimum:</strong> Pada $x = 90^\circ$</li>
-                                <li><strong>Lembah Minimum:</strong> Pada $x = 270^\circ$</li>
-                            </ul>
-                        </div>
-
-                        <!-- Kosinus Card -->
-                        <div class="bg-emerald-50/60 border border-emerald-200 p-3.5 rounded-xl space-y-2">
-                            <span class="px-2 py-0.5 bg-emerald-600 text-white font-bold rounded text-[10px] uppercase tracking-wider">Fungsi Kosinus</span>
-                            <div class="text-xs font-bold text-emerald-900 math-font">y = cos(x)</div>
-                            <ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
-                                <li><strong>Dimulai dari:</strong> Puncak $(0,1)$</li>
-                                <li><strong>Amplitudo dasar:</strong> $1$ (Rentang $[-1, 1]$)</li>
-                                <li><strong>Periode dasar ($T$):</strong> $360^\circ$ ($2\pi$ rad)</li>
-                                <li><strong>Memotong sumbu-X:</strong> $x = 90^\circ, 270^\circ$</li>
-                                <li><strong>Lembah Minimum:</strong> Pada $x = 180^\circ$</li>
-                            </ul>
-                        </div>
-
-                        <!-- Tangen Card -->
-                        <div class="bg-purple-50/60 border border-purple-200 p-3.5 rounded-xl space-y-2">
-                            <span class="px-2 py-0.5 bg-purple-600 text-white font-bold rounded text-[10px] uppercase tracking-wider">Fungsi Tangen</span>
-                            <div class="text-xs font-bold text-purple-900 math-font">y = tan(x)</div>
-                            <ul class="text-xs text-slate-700 space-y-1.5 list-disc pl-4">
-                                <li><strong>Bentuk kurva:</strong> Gelombang terputus</li>
-                                <li><strong>Periode dasar ($T$):</strong> $180^\circ$ ($\pi$ rad)</li>
-                                <li><strong>Asimtot Tegak:</strong> $90^\circ, 270^\circ$ ($\cos x = 0$)</li>
-                                <li><strong>Rentang (Range):</strong> $(-\infty, +\infty)$</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 3: Transformasi Grafik -->
-                <div id="materi-page-3" class="materi-page hidden flex flex-col gap-4">
-                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                        Dengan memodifikasi nilai parameter $A, B, C,$ dan $D$, grafik trigonometri dasar dapat diregangkan, dipampatkan, atau digeser.
-                    </p>
-
-                    <div class="p-3.5 bg-slate-900 text-white rounded-xl text-center shadow-sm">
-                        <div class="text-xs text-slate-300 font-medium mb-1">Bentuk Umum Persamaan Transformasi:</div>
-                        <div class="text-base sm:text-lg font-bold text-amber-300 math-font">
-                            $$y = A \cdot \sin(B(x - C)) + D$$
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                            <div class="flex items-center gap-2 font-bold text-blue-900 mb-1">
-                                <span class="px-1.5 py-0.5 bg-blue-600 text-white rounded text-[11px]">A</span>
-                                <span>Amplitudo & Refleksi ($A$)</span>
-                            </div>
-                            <p class="text-slate-700 leading-relaxed">
-                                Amplitudo $= |A|$. Menentukan tinggi gelombang dari midline. Jika $A < 0$, grafik dicerminkan (dibalik) terhadap sumbu mendatar.
-                            </p>
-                        </div>
-
-                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
-                            <div class="flex items-center gap-2 font-bold text-emerald-900 mb-1">
-                                <span class="px-1.5 py-0.5 bg-emerald-600 text-white rounded text-[11px]">B</span>
-                                <span>Frekuensi & Periode ($B$)</span>
-                            </div>
-                            <p class="text-slate-700 leading-relaxed">
-                                Periode $T = \frac{360^\circ}{|B|}$. Nilai $B$ menentukan banyaknya gelombang lengkap dalam rentang $360^\circ$.
-                            </p>
-                        </div>
-
-                        <div class="p-3 bg-purple-50 border border-purple-200 rounded-xl">
-                            <div class="flex items-center gap-2 font-bold text-purple-900 mb-1">
-                                <span class="px-1.5 py-0.5 bg-purple-600 text-white rounded text-[11px]">C</span>
-                                <span>Pergeseran Fase Horizontal ($C$)</span>
-                            </div>
-                            <p class="text-slate-700 leading-relaxed">
-                                Menentukan pergeseran horizontal. Jika $(x - C)$ dengan $C > 0$, grafik bergeser ke <strong>kanan</strong> sejauh $C$.
-                            </p>
-                        </div>
-
-                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                            <div class="flex items-center gap-2 font-bold text-amber-900 mb-1">
-                                <span class="px-1.5 py-0.5 bg-amber-600 text-white rounded text-[11px]">D</span>
-                                <span>Pergeseran Vertikal / Midline ($D$)</span>
-                            </div>
-                            <p class="text-slate-700 leading-relaxed">
-                                Menentukan posisi garis tengah gelombang (<em>midline</em> $y = D$). Grafik bergeser ke <strong>atas</strong> jika $D > 0$.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGE 4: Rangkuman & Contoh -->
-                <div id="materi-page-4" class="materi-page hidden flex flex-col gap-4">
-                    <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                        Mari pelajari langkah demi langkah cara menentukan persamaan dari sebuah grafik trigonometri yang telah ditransformasikan.
-                    </p>
-
-                    <div class="bg-amber-50/70 border border-amber-200 p-4 rounded-xl space-y-3">
-                        <div class="flex items-center gap-2 font-bold text-amber-900 text-sm">
-                            <i class="fa-solid fa-lightbulb text-amber-600"></i>
-                            Contoh Soal Analisis Grafik
-                        </div>
-                        <p class="text-xs text-slate-700 leading-relaxed">
-                            Sebuah gelombang sinus memiliki titik tertinggi di $y = 5$ dan titik terendah di $y = -1$. Jika periodenya $180^\circ$ tanpa geseran horizontal, tentukan persamaannya!
-                        </p>
-                        
-                        <div class="p-3 bg-white rounded-lg border border-amber-200 space-y-1.5 text-xs text-slate-800">
-                            <div class="font-bold text-slate-900 border-b border-slate-100 pb-1">Langkah Penyelesaian:</div>
-                            <div>1. <strong>Cari Midline ($D$):</strong> $D = \frac{Y_{max} + Y_{min}}{2} = \frac{5 + (-1)}{2} = 2$</div>
-                            <div>2. <strong>Cari Amplitudo ($A$):</strong> $A = Y_{max} - D = 5 - 2 = 3$</div>
-                            <div>3. <strong>Cari Nilai $B$:</strong> $B = \frac{360^\circ}{\text{Periode}} = \frac{360^\circ}{180^\circ} = 2$</div>
-                            <div>4. <strong>Persamaan Akhir:</strong> <span class="font-bold text-blue-700 math-font">$y = 3\sin(2x) + 2$</span></div>
-                        </div>
-                    </div>
-
-                    <div class="p-3.5 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-between">
-                        <div class="text-xs text-blue-900">
-                            <strong>Siap menguji pemahamanmu?</strong> Coba atur slider pada modul Tantangan!
-                        </div>
-                        <button onclick="switchTab('tantangan')" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-lg shadow-sm transition active:scale-95 shrink-0">
-                            Ke Tantangan <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Footer Navigation inside Page Container -->
-                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
-                    <span id="materi-bottom-indicator" class="text-slate-500 font-medium">
-                        Halaman 1 dari 4
-                    </span>
-                    <div class="flex items-center gap-2">
-                        <button id="btn-materi-bottom-prev" onclick="changeMateriPage(-1)" class="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold transition disabled:opacity-40 disabled:cursor-not-allowed">
-                            <i class="fa-solid fa-arrow-left mr-1"></i> Kembali
-                        </button>
-                        <button id="btn-materi-bottom-next" onclick="changeMateriPage(1)" class="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition shadow-sm active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed">
-                            Lanjut <i class="fa-solid fa-arrow-right ml-1"></i>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ================= TAB 3: TANTANGAN (MATCH GAME) ================= -->
-        <section id="tab-tantangan" class="tab-content hidden flex flex-col gap-4 max-w-5xl mx-auto w-full">
-            <div class="clean-panel p-4 md:p-6 rounded-2xl">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 border-b border-slate-100 pb-3">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fa-solid fa-gamepad text-blue-600"></i>
-                            Tantangan Cocokkan Grafik
-                        </h2>
-                        <p class="text-xs text-slate-500">Atur fungsi dan slider $A, B, C, D$ agar grafik birumu tepat menutupi grafik target merah!</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 text-center">
-                            <span class="text-[10px] text-slate-500 font-bold uppercase block">Kesesuaian</span>
-                            <span id="game-match-percent" class="text-base font-bold text-blue-700 math-font">0%</span>
-                        </div>
-                        <button onclick="generateNewGameChallenge()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition active:scale-95">
-                            <i class="fa-solid fa-shuffle mr-1"></i> Soal Baru
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                    <!-- Game Canvas -->
-                    <div class="lg:col-span-8 bg-white rounded-2xl p-3 border border-slate-200 flex flex-col gap-2 shadow-inner">
-                        <div class="canvas-container h-[260px] sm:h-[320px]">
-                            <canvas id="gameCanvas" class="w-full h-full"></canvas>
-                        </div>
-                        <div class="flex justify-between items-center text-xs px-2 pt-1 border-t border-slate-100">
-                            <span class="text-rose-600 font-bold flex items-center gap-1.5">
-                                <span class="w-3 h-1 bg-rose-600 rounded inline-block"></span> Grafik Target (Merah Putus-Putus)
-                            </span>
-                            <span class="text-blue-600 font-bold flex items-center gap-1.5">
-                                <span class="w-3 h-1 bg-blue-600 rounded inline-block"></span> Grafik Kamu (Biru Solid)
-                            </span>
-                        </div>
-                    </div>
-
-                    <!-- Game Sliders and Dynamic Equation Display -->
-                    <div class="lg:col-span-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 flex flex-col justify-between gap-3">
-                        <div>
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Persamaan Grafik Kamu</h3>
-                            <!-- Dynamic User Equation -->
-                            <div id="game-user-equation-math" class="text-sm font-bold text-slate-900 bg-white p-2.5 rounded-xl border border-slate-200 text-center shadow-sm mb-3 min-h-[44px] flex items-center justify-center">
-                                <!-- Rendered dynamically -->
-                            </div>
-
-                            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Atur Fungsi & Parameter Kamu</h3>
-                            
-                            <!-- Base Function Toggle (Game) -->
-                            <div class="mb-3 bg-slate-100 p-1 rounded-xl border border-slate-200 grid grid-cols-3 gap-1.5">
-                                <button onclick="setGameUserFunc('sin')" id="btn-game-func-sin" class="game-func-btn py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm">sin</button>
-                                <button onclick="setGameUserFunc('cos')" id="btn-game-func-cos" class="game-func-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">cos</button>
-                                <button onclick="setGameUserFunc('tan')" id="btn-game-func-tan" class="game-func-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">tan</button>
-                            </div>
-
-                            <div class="space-y-3">
-                                <div>
-                                    <div class="flex justify-between text-xs mb-1">
-                                        <span class="text-slate-700 font-bold">A (Amplitudo)</span>
-                                        <span id="game-val-a" class="math-font text-blue-700 font-bold">1.0</span>
-                                    </div>
-                                    <input type="range" id="game-slider-a" min="-3" max="3" step="0.5" value="1" oninput="updateGameUserParams()">
-                                </div>
-                                <div>
-                                    <div class="flex justify-between text-xs mb-1">
-                                        <span class="text-slate-700 font-bold">B (Periode)</span>
-                                        <span id="game-val-b" class="math-font text-emerald-700 font-bold">1.0</span>
-                                    </div>
-                                    <input type="range" id="game-slider-b" min="0.5" max="3" step="0.5" value="1" oninput="updateGameUserParams()">
-                                </div>
-                                <div>
-                                    <div class="flex justify-between text-xs mb-1">
-                                        <span class="text-slate-700 font-bold">C (Fase)</span>
-                                        <span id="game-val-c" class="math-font text-purple-700 font-bold">0°</span>
-                                    </div>
-                                    <input type="range" id="game-slider-c" min="-180" max="180" step="30" value="0" oninput="updateGameUserParams()">
-                                </div>
-                                <div>
-                                    <div class="flex justify-between text-xs mb-1">
-                                        <span class="text-slate-700 font-bold">D (Geser Vertikal)</span>
-                                        <span id="game-val-d" class="math-font text-amber-700 font-bold">0.0</span>
-                                    </div>
-                                    <input type="range" id="game-slider-d" min="-2" max="2" step="0.5" value="0" oninput="updateGameUserParams()">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="game-success-message" class="hidden p-3 bg-emerald-100 border border-emerald-300 rounded-xl text-center">
-                            <span class="text-xs font-bold text-emerald-800 block">
-                                <i class="fa-solid fa-circle-check mr-1"></i> Luar Biasa!
-                            </span>
-                            <span id="game-target-eq-success" class="text-[11px] text-emerald-700 block mt-1">
-                                Grafik kamu tepat menutupi target!
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= TAB 4: EVALUASI ================= -->
-        <section id="tab-evaluasi" class="tab-content hidden flex flex-col gap-6 max-w-3xl mx-auto w-full">
-            <div class="clean-panel p-5 sm:p-7 rounded-2xl">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                    <div>
-                        <h2 class="text-xl font-bold text-slate-900">Evaluasi Pemahaman</h2>
-                        <p class="text-xs text-slate-500">Uji pemahamanmu tentang karakteristik dan persamaan grafik fungsi trigonometri</p>
-                    </div>
-                    <div id="quiz-score-badge" class="hidden px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
-                        Skor: <span id="quiz-score-val" class="math-font text-sm">0</span> / 100
-                    </div>
-                </div>
-
-                <!-- Quiz Questions Container -->
-                <div id="quiz-container" class="space-y-6">
-                    <!-- Dynamic Questions -->
-                </div>
-
-                <div class="mt-8 flex justify-end gap-3 border-t border-slate-100 pt-4">
-                    <button id="btn-submit-quiz" onclick="submitQuiz()" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md transition active:scale-95">
-                        <i class="fa-solid fa-paper-plane mr-2"></i>Kirim Jawaban
-                    </button>
-                    <button id="btn-reset-quiz" onclick="resetQuiz()" class="hidden px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
-                        Coba Lagi
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= TAB 5: REFLEKSI ================= -->
-        <section id="tab-refleksi" class="tab-content hidden flex flex-col gap-6 max-w-3xl mx-auto w-full">
-            <div class="clean-panel p-5 sm:p-7 rounded-2xl">
-                <div class="mb-6 border-b border-slate-100 pb-4">
-                    <h2 class="text-xl font-bold text-slate-900 mb-1">Jurnal Refleksi Pembelajaran</h2>
-                    <p class="text-xs text-slate-500">Tuliskan temuan matematika dan kesimpulan penting dari eksperimen Lab Maya yang telah kamu lakukan.</p>
-                </div>
-
-                <div class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold text-blue-700 mb-2">
-                            1. Bagaimana hubungan antara koordinat $y$ dari titik $P$ pada lingkaran satuan dengan tinggi gelombang grafik $y = \sin(x)$?
-                        </label>
-                        <textarea id="ref-1" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-blue-500 transition shadow-inner" placeholder="Tuliskan hasil pengamatanmu..."></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-emerald-700 mb-2">
-                            2. Apa dampak merubah nilai parameter $A$ (Amplitudo) dan $B$ (Frekuensi) terhadap bentuk grafik $y = A \sin(Bx)$?
-                        </label>
-                        <textarea id="ref-2" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-emerald-500 transition shadow-inner" placeholder="Tuliskan hasil pengamatanmu..."></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-purple-700 mb-2">
-                            3. Bagaimana membedakan pengaruh pergeseran parameter $C$ (horizontal) dan $D$ (vertikal)?
-                        </label>
-                        <textarea id="ref-3" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-purple-500 transition shadow-inner" placeholder="Tuliskan hasil pengamatanmu..."></textarea>
-                    </div>
-                </div>
-
-                <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
-                    <span id="reflection-saved-toast" class="text-xs text-emerald-600 font-bold hidden">
-                        <i class="fa-solid fa-check mr-1"></i> Catatan refleksi berhasil disalin ke clipboard!
-                    </span>
-                    <button onclick="saveReflection()" class="ml-auto px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md transition active:scale-95 flex items-center gap-2">
-                        <i class="fa-solid fa-floppy-disk"></i> Simpan & Salin Jurnal
-                    </button>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- MOBILE NAVIGATION BAR -->
-    <nav class="md:hidden sticky bottom-0 z-30 bg-white border-t border-slate-200 px-2 py-1.5 flex justify-around items-center shadow-lg">
-        <button onclick="switchTab('lab')" id="mob-nav-lab" class="mob-nav-btn flex flex-col items-center gap-1 p-1.5 text-blue-600">
-            <i class="fa-solid fa-flask text-base"></i>
-            <span class="text-[10px] font-bold">Lab Maya</span>
-        </button>
-        <button onclick="switchTab('materi')" id="mob-nav-materi" class="mob-nav-btn flex flex-col items-center gap-1 p-1.5 text-slate-500">
-            <i class="fa-solid fa-book-open text-base"></i>
-            <span class="text-[10px] font-medium">Materi</span>
-        </button>
-        <button onclick="switchTab('tantangan')" id="mob-nav-tantangan" class="mob-nav-btn flex flex-col items-center gap-1 p-1.5 text-slate-500">
-            <i class="fa-solid fa-gamepad text-base"></i>
-            <span class="text-[10px] font-medium">Tantangan</span>
-        </button>
-        <button onclick="switchTab('evaluasi')" id="mob-nav-evaluasi" class="mob-nav-btn flex flex-col items-center gap-1 p-1.5 text-slate-500">
-            <i class="fa-solid fa-clipboard-check text-base"></i>
-            <span class="text-[10px] font-medium">Evaluasi</span>
-        </button>
-        <button onclick="switchTab('refleksi')" id="mob-nav-refleksi" class="mob-nav-btn flex flex-col items-center gap-1 p-1.5 text-slate-500">
-            <i class="fa-solid fa-pen-to-square text-base"></i>
-            <span class="text-[10px] font-medium">Refleksi</span>
-        </button>
-    </nav>
-
-    <!-- INFORMATION MODAL -->
-    <div id="info-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-        <div class="clean-panel max-w-lg w-full rounded-2xl p-6 shadow-2xl flex flex-col max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
-                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-info text-blue-600"></i>
-                    Informasi & Petunjuk Aplikasi
-                </h3>
-                <button onclick="closeModal('info-modal')" class="text-slate-400 hover:text-slate-700 p-1">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <div class="space-y-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                    <h4 class="font-bold text-blue-900 mb-1">Tentang Lab Maya ini</h4>
-                    <p class="text-xs text-blue-800">
-                        Aplikasi ini dikembangkan untuk memfasilitasi pembelajaran matematika berbasis <strong>Guided Discovery Learning (Penemuan Terbimbing)</strong> pada topik Grafik Fungsi Trigonometri.
-                    </p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-1.5">Langkah Eksplorasi:</h4>
-                    <ol class="list-decimal pl-4 space-y-1.5 text-xs text-slate-600">
-                        <li>Buka menu <strong>1. Lingkaran Satuan</strong> untuk mengamati bagaimana nilai sudut membentuk gelombang trigonometri secara geometris.</li>
-                        <li>Gunakan menu <strong>2. Karakteristik & Transformasi</strong> untuk menggeser slider $A, B, C, D$ dan menemukan peran masing-masing parameter.</li>
-                        <li>Uji pemahaman intuitifmu di menu <strong>Tantangan</strong>.</li>
-                        <li>Selesaikan <strong>Evaluasi</strong> dan dokumentasikan temuanmu di jurnal <strong>Refleksi</strong>.</li>
-                    </ol>
-                </div>
-
-                <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-base shrink-0 shadow-sm">
-                        IS
-                    </div>
-                    <div>
-                        <div class="text-[11px] text-slate-500 uppercase font-bold">Pengembang Media:</div>
-                        <div class="text-sm font-bold text-slate-900">I Made Agus Suputrayasa</div>
-                        <div class="text-[11px] text-blue-600 font-semibold">Guru Matematika</div>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="closeModal('info-modal')" class="mt-6 w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition">
-                Paham & Lanjutkan
-            </button>
-        </div>
-    </div>
-
-    <script>
-        // State Global
-        let currentTab = 'lab';
-        let currentLabSubtab = 'unit-circle';
-        
-        // Materi Pagination State
-        let materiCurrentPage = 1;
-        const materiTotalPages = 4;
-        const materiTitles = [
-            "1. Konsep Lingkaran Satuan (Unit Circle)",
-            "2. Karakteristik Utama Fungsi Trigonometri",
-            "3. Transformasi Grafik & Persamaan Umum",
-            "4. Rangkuman & Contoh Soal Analisis"
-        ];
-
-        // Modul 1 State
-        let circleAngle = 0; // degrees
-        let circleFunc = 'sin'; // 'sin', 'cos', 'tan'
-        let isCirclePlaying = false;
-        let circleAnimationId = null;
-
-        // Modul 2 State
-        let transformFunc = 'sin';
-        let paramA = 1.0;
-        let paramB = 1.0;
-        let paramC = 0; // degrees
-        let paramD = 0.0;
-
-        // Game State
-        let gameTarget = { func: 'sin', a: 1, b: 1, c: 0, d: 0 };
-        let gameUser = { func: 'sin', a: 1, b: 1, c: 0, d: 0 };
-
-        // Quiz Questions Data with KaTeX math string support
-        const quizQuestions = [
-            {
-                question: "Berapakah nilai puncak maksimum dari fungsi $y = 3 \\sin(2x) + 1$?",
-                options: ["3", "4", "2", "7"],
-                answer: 1,
-                explanation: "Nilai maksimum diperoleh dari $|A| + D = |3| + 1 = 4$."
-            },
-            {
-                question: "Berapakah periode ($T$) dari grafik fungsi $y = \\cos(2x)$?",
-                options: ["$180^\\circ$ ($\\pi$ rad)", "$360^\\circ$ ($2\\pi$ rad)", "$90^\\circ$ ($\\frac{\\pi}{2}$ rad)", "$720^\\circ$ ($4\\pi$ rad)"],
-                answer: 0,
-                explanation: "Periode $T = \\frac{360^\\circ}{|B|} = \\frac{360^\\circ}{2} = 180^\\circ$."
-            },
-            {
-                question: "Jika grafik $y = \\sin(x)$ digeser ke kanan sejauh $45^\\circ$ dan diangkat ke atas 2 satuan, persamaannya adalah...",
-                options: ["$y = \\sin(x + 45^\\circ) + 2$", "$y = \\sin(x - 45^\\circ) + 2$", "$y = \\sin(x - 45^\\circ) - 2$", "$y = 2 \\sin(x - 45^\\circ)$"],
-                answer: 1,
-                explanation: "Pergeseran ke kanan berarti $(x - C) = (x - 45^\\circ)$, dan pergeseran ke atas berarti $+D = +2$."
-            },
-            {
-                question: "Pada lingkaran satuan dengan jari-jari $r=1$, koordinat titik $P$ untuk sudut $\\theta$ mewakili...",
-                options: ["$(\\tan\\theta, \\sin\\theta)$", "$(\\cos\\theta, \\sin\\theta)$", "$(\\sin\\theta, \\cos\\theta)$", "$(1, \\tan\\theta)$"],
-                answer: 1,
-                explanation: "Pada lingkaran satuan, $x = r \\cos\\theta = \\cos\\theta$ dan $y = r \\sin\\theta = \\sin\\theta$."
-            },
-            {
-                question: "Garis asimtot tegak pada grafik $y = \\tan(x)$ terjadi pada sudut...",
-                options: ["$0^\\circ$ dan $180^\\circ$", "$90^\\circ$ dan $270^\\circ$", "$45^\\circ$ dan $135^\\circ$", "$180^\\circ$ dan $360^\\circ$"],
-                answer: 1,
-                explanation: "Fungsi tangen bernilai tak terdefinisi saat $\\cos(x) = 0$, yaitu pada $90^\\circ$ dan $270^\\circ$."
-            }
-        ];
-
-        // Safe Math Rendering Helper Function
-        function safeRenderMath(element = document.body) {
-            if (window.renderMathInElement && element) {
-                try {
-                    renderMathInElement(element, {
-                        delimiters: [
-                            {left: '$$', right: '$$', display: true},
-                            {left: '$', right: '$', display: false}
-                        ],
-                        throwOnError: false
-                    });
-                } catch (e) {
-                    console.warn("KaTeX render notice:", e);
-                }
-            }
-        }
-
-        // On Document Load
-        window.addEventListener('load', () => {
-            // Simulate App Loading Bar
-            const bar = document.getElementById('loading-bar');
-            let width = 0;
-            const interval = setInterval(() => {
-                width += 25;
-                bar.style.width = width + '%';
-                if (width >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        document.getElementById('splash-loading-box').classList.add('hidden');
-                        document.getElementById('btn-start-app').classList.remove('hidden');
-                    }, 200);
-                }
-            }, 80);
-
-            // Init Canvas Resizing & Rendering
-            initCanvases();
-            window.addEventListener('resize', debounce(initCanvases, 150));
-
-            // Initial Math Render
-            safeRenderMath(document.body);
-
-            // Initialize Quiz & Game Challenge
-            renderQuiz();
-            generateNewGameChallenge();
-            updateTransformParams();
-            updateGameUserParams();
-            updateMateriPageDisplay();
-        });
-
-        // Trigger Fullscreen on Start Click
-        function startApp() {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log("Fullscreen request declined/blocked by browser policy:", err);
-                });
-            }
-            const splash = document.getElementById('splash-screen');
-            splash.style.opacity = '0';
-            setTimeout(() => splash.remove(), 500);
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
-
-        function switchTab(tabId) {
-            currentTab = tabId;
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            const activeTabEl = document.getElementById(`tab-${tabId}`);
-            activeTabEl.classList.remove('hidden');
-
-            // Header Nav Styling
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
-            });
-            const activeNav = document.getElementById(`nav-${tabId}`);
-            if (activeNav) activeNav.className = "nav-btn px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-blue-600 text-white shadow-sm";
-
-            // Mobile Nav Styling
-            document.querySelectorAll('.mob-nav-btn').forEach(btn => {
-                btn.className = "mob-nav-btn flex flex-col items-center gap-1 p-1.5 text-slate-500";
-            });
-            const activeMob = document.getElementById(`mob-nav-${tabId}`);
-            if (activeMob) activeMob.className = "mob-nav-btn flex flex-col items-center gap-1 p-1.5 text-blue-600 font-bold";
-
-            // Re-render math in active tab
-            safeRenderMath(activeTabEl);
-
-            if (tabId === 'materi') {
-                updateMateriPageDisplay();
-            }
-
-            // Redraw active canvas
-            setTimeout(() => {
-                if (tabId === 'lab') {
-                    if (currentLabSubtab === 'unit-circle') drawUnitCircleCanvas();
-                    else drawTransformGraph();
-                } else if (tabId === 'tantangan') {
-                    drawGameCanvas();
-                }
-            }, 50);
-        }
-
-        function goToMateriPage(page) {
-            if (page < 1 || page > materiTotalPages) return;
-            materiCurrentPage = page;
-            updateMateriPageDisplay();
-        }
-
-        function changeMateriPage(dir) {
-            goToMateriPage(materiCurrentPage + dir);
-        }
-
-        function updateMateriPageDisplay() {
-            const titleEl = document.getElementById('materi-page-title');
-            if (titleEl) titleEl.textContent = materiTitles[materiCurrentPage - 1];
-
-            const indEl = document.getElementById('materi-page-indicator');
-            if (indEl) indEl.textContent = `${materiCurrentPage} / ${materiTotalPages}`;
-
-            const bottomIndEl = document.getElementById('materi-bottom-indicator');
-            if (bottomIndEl) bottomIndEl.textContent = `Halaman ${materiCurrentPage} dari ${materiTotalPages}`;
-
-            for (let i = 1; i <= materiTotalPages; i++) {
-                const pageEl = document.getElementById(`materi-page-${i}`);
-                if (pageEl) {
-                    if (i === materiCurrentPage) {
-                        pageEl.classList.remove('hidden');
-                    } else {
-                        pageEl.classList.add('hidden');
-                    }
-                }
-
-                const pillEl = document.getElementById(`materi-pill-${i}`);
-                if (pillEl) {
-                    if (i === materiCurrentPage) {
-                        pillEl.className = "materi-pill-btn py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold transition text-center truncate bg-white text-blue-700 shadow-sm border border-blue-200";
-                    } else {
-                        pillEl.className = "materi-pill-btn py-1.5 px-2 rounded-lg text-[11px] sm:text-xs font-bold transition text-center truncate text-slate-600 hover:text-slate-900 border border-transparent";
-                    }
-                }
-            }
-
-            const prevBtns = [document.getElementById('btn-materi-prev'), document.getElementById('btn-materi-bottom-prev')];
-            const nextBtns = [document.getElementById('btn-materi-next'), document.getElementById('btn-materi-bottom-next')];
-
-            prevBtns.forEach(btn => {
-                if (btn) btn.disabled = (materiCurrentPage === 1);
-            });
-
-            nextBtns.forEach(btn => {
-                if (btn) btn.disabled = (materiCurrentPage === materiTotalPages);
-            });
-
-            const tabEl = document.getElementById('tab-materi');
-            if (tabEl) safeRenderMath(tabEl);
-        }
-
-        function switchLabSubtab(subtab) {
-            currentLabSubtab = subtab;
-            if (subtab === 'unit-circle') {
-                document.getElementById('subtab-content-circle').classList.remove('hidden');
-                document.getElementById('subtab-content-transform').classList.add('hidden');
-                document.getElementById('subtab-unit-circle').className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 bg-blue-600 text-white shadow-sm";
-                document.getElementById('subtab-transform').className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900";
-                safeRenderMath(document.getElementById('subtab-content-circle'));
-                drawUnitCircleCanvas();
-            } else {
-                document.getElementById('subtab-content-circle').classList.add('hidden');
-                document.getElementById('subtab-content-transform').classList.remove('hidden');
-                document.getElementById('subtab-transform').className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 bg-blue-600 text-white shadow-sm";
-                document.getElementById('subtab-unit-circle').className = "px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900";
-                safeRenderMath(document.getElementById('subtab-content-transform'));
-                drawTransformGraph();
-            }
-        }
-
-        function openModal(id) { 
-            const m = document.getElementById(id);
-            m.classList.remove('hidden'); 
-            safeRenderMath(m);
-        }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {});
-                document.getElementById('fullscreen-icon').className = "fa-solid fa-compress text-sm";
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                    document.getElementById('fullscreen-icon').className = "fa-solid fa-expand text-sm";
-                }
-            }
-        }
-
-        // Setup DPI Aware Canvas Sizing
-        function getScaledContext(canvasId) {
-            const cvs = document.getElementById(canvasId);
-            if (!cvs || !cvs.parentElement) return null;
-
-            const dpr = window.devicePixelRatio || 1;
-            const rect = cvs.parentElement.getBoundingClientRect();
-
-            cvs.width = rect.width * dpr;
-            cvs.height = rect.height * dpr;
-
-            const ctx = cvs.getContext('2d');
-            ctx.resetTransform();
-            ctx.scale(dpr, dpr);
-
-            return { ctx, width: rect.width, height: rect.height };
-        }
-
-        function initCanvases() {
-            drawUnitCircleCanvas();
-            drawTransformGraph();
-            drawGameCanvas();
-        }
-
-        function setCircleFunction(fn) {
-            circleFunc = fn;
-            document.querySelectorAll('.func-btn').forEach(btn => {
-                btn.className = "func-btn py-2.5 rounded-xl font-bold text-xs sm:text-sm transition border border-slate-200 bg-white text-slate-600 hover:bg-slate-50";
-            });
-            document.getElementById(`btn-func-${fn}`).className = "func-btn py-2.5 rounded-xl font-bold text-xs sm:text-sm transition border border-blue-500 bg-blue-50 text-blue-700 shadow-sm";
-
-            const titleEl = document.getElementById('prompt-title');
-            const descEl = document.getElementById('prompt-desc');
-            const qEl = document.getElementById('prompt-question');
-
-            if (fn === 'sin') {
-                titleEl.textContent = "Mengamati Pembentukan Grafik Sinus";
-                descEl.innerHTML = "Geser slider sudut $\\theta$ dari $0^\\circ$ hingga $360^\\circ$. Perhatikan bagaimana nilai koordinat-$y$ (tinggi vertikal) dari titik $P$ ditransfer membentuk kurva gelombang sinus.";
-                qEl.innerHTML = "Di sudut manakah grafik mencapai nilai puncak maksimum ($+1$) dan lembah minimum ($-1$)?";
-            } else if (fn === 'cos') {
-                titleEl.textContent = "Mengamati Pembentukan Grafik Kosinus";
-                descEl.innerHTML = "Kosinus mewakili nilai koordinat-$x$ (panjang horizontal) dari titik $P$. Amati bagaimana proyeksi horizontal ditransfer ke sumbu Kartesius kanan.";
-                qEl.innerHTML = "Berapa nilai awal $\\cos(0^\\circ)$? Bandingkan bentuk awal gelombang kosinus dengan gelombang sinus!";
-            } else {
-                titleEl.textContent = "Mengamati Pembentukan Grafik Tangen";
-                descEl.innerHTML = "Tangen merupakan rasio $y/x = \\sin\\theta/\\cos\\theta$. Amati fenomena unik pada grafik saat sudut mendekati $90^\\circ$ dan $270^\\circ$.";
-                qEl.innerHTML = "Mengapa grafik terputus dan melonjak tak terhingga di sudut $90^\\circ$ dan $270^\\circ$ (garis asimtot)?";
-            }
-
-            safeRenderMath(document.getElementById('subtab-content-circle'));
-            updateAngleDisplay();
-            drawUnitCircleCanvas();
-        }
-
-        function onAngleSliderChange(val) {
-            circleAngle = parseFloat(val);
-            updateAngleDisplay();
-            drawUnitCircleCanvas();
-        }
-
-        function updateAngleDisplay() {
-            const rad = (circleAngle * Math.PI / 180).toFixed(2);
-            document.getElementById('display-angle').textContent = `${circleAngle}° (${rad} rad)`;
-
-            const radVal = circleAngle * Math.PI / 180;
-            const xVal = Math.cos(radVal);
-            const yVal = Math.sin(radVal);
-
-            document.getElementById('val-p-coord').textContent = `(${xVal.toFixed(2)}, ${yVal.toFixed(2)})`;
-
-            const outEl = document.getElementById('val-func-output');
-            let latexStr = "";
-            if (circleFunc === 'sin') {
-                latexStr = `\\sin(${circleAngle}^\\circ) = ${yVal.toFixed(2)}`;
-            } else if (circleFunc === 'cos') {
-                latexStr = `\\cos(${circleAngle}^\\circ) = ${xVal.toFixed(2)}`;
-            } else {
-                if (Math.abs(xVal) < 0.001) {
-                    latexStr = `\\tan(${circleAngle}^\\circ) = \\text{Tak Terdefinisi}`;
-                } else {
-                    latexStr = `\\tan(${circleAngle}^\\circ) = ${(yVal / xVal).toFixed(2)}`;
-                }
-            }
-
-            if (window.katex) {
-                katex.render(latexStr, outEl, { throwOnError: false });
-            } else {
-                outEl.textContent = latexStr;
-            }
-        }
-
-        function togglePlayCircle() {
-            isCirclePlaying = !isCirclePlaying;
-            const icon = document.getElementById('icon-play-circle');
-            if (isCirclePlaying) {
-                icon.className = "fa-solid fa-pause";
-                animateCircle();
-            } else {
-                icon.className = "fa-solid fa-play";
-                if (circleAnimationId) cancelAnimationFrame(circleAnimationId);
-            }
-        }
-
-        function animateCircle() {
-            if (!isCirclePlaying) return;
-            circleAngle = (circleAngle + 1) % 361;
-            document.getElementById('slider-angle').value = circleAngle;
-            updateAngleDisplay();
-            drawUnitCircleCanvas();
-            circleAnimationId = requestAnimationFrame(animateCircle);
-        }
-
-        function resetUnitCircle() {
-            if (isCirclePlaying) togglePlayCircle();
-            circleAngle = 0;
-            document.getElementById('slider-angle').value = 0;
-            updateAngleDisplay();
-            drawUnitCircleCanvas();
-        }
-
-        function drawUnitCircleCanvas() {
-            const scaled = getScaledContext('unitCircleCanvas');
-            if (!scaled || currentLabSubtab !== 'unit-circle') return;
-            const { ctx, width: w, height: h } = scaled;
-
-            ctx.clearRect(0, 0, w, h);
-
-            // Layout Dimensions
-            const circleCenterX = Math.min(w * 0.3, 140);
-            const circleCenterY = h / 2;
-            const radius = Math.min(circleCenterX - 30, h / 2 - 35);
-
-            const graphStartX = circleCenterX + radius + 40;
-            const graphWidth = w - graphStartX - 25;
-            const graphCenterY = h / 2;
-            const scaleY = radius; // 1 unit = radius px
-
-            // --- 1. DRAW LEFT UNIT CIRCLE ---
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, w, h);
-
-            // Quadrant Labels (I, II, III, IV)
-            ctx.font = 'bold 10px Plus Jakarta Sans';
-            ctx.fillStyle = '#cbd5e1';
-            ctx.fillText('I', circleCenterX + radius * 0.4, circleCenterY - radius * 0.4);
-            ctx.fillText('II', circleCenterX - radius * 0.5, circleCenterY - radius * 0.4);
-            ctx.fillText('III', circleCenterX - radius * 0.5, circleCenterY + radius * 0.5);
-            ctx.fillText('IV', circleCenterX + radius * 0.4, circleCenterY + radius * 0.5);
-
-            // Circle Axes
-            ctx.strokeStyle = '#94a3b8';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(circleCenterX - radius - 18, circleCenterY);
-            ctx.lineTo(circleCenterX + radius + 18, circleCenterY);
-            ctx.moveTo(circleCenterX, circleCenterY - radius - 18);
-            ctx.lineTo(circleCenterX, circleCenterY + radius + 18);
-            ctx.stroke();
-
-            // Axis Arrow Labels
-            ctx.fillStyle = '#475569';
-            ctx.font = 'bold 11px Plus Jakarta Sans';
-            ctx.fillText('X', circleCenterX + radius + 22, circleCenterY + 4);
-            ctx.fillText('Y', circleCenterX - 4, circleCenterY - radius - 22);
-
-            // Main Unit Circle Boundary
-            ctx.beginPath();
-            ctx.arc(circleCenterX, circleCenterY, radius, 0, 2 * Math.PI);
-            ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Key Boundary Point Labels (1,0), (0,1), (-1,0), (0,-1)
-            ctx.font = '10px Fira Code';
-            ctx.fillStyle = '#64748b';
-            ctx.fillText('(1,0)', circleCenterX + radius + 4, circleCenterY + 14);
-            ctx.fillText('(0,1)', circleCenterX - 12, circleCenterY - radius - 6);
-            ctx.fillText('(-1,0)', circleCenterX - radius - 32, circleCenterY + 14);
-            ctx.fillText('(0,-1)', circleCenterX - 14, circleCenterY + radius + 14);
-
-            // Active Angle Calculation
-            const rad = circleAngle * Math.PI / 180;
-            const px = circleCenterX + radius * Math.cos(rad);
-            const py = circleCenterY - radius * Math.sin(rad);
-
-            // Angle Sector Fill
-            ctx.beginPath();
-            ctx.moveTo(circleCenterX, circleCenterY);
-            ctx.arc(circleCenterX, circleCenterY, radius * 0.25, 0, -rad, true);
-            ctx.fillStyle = 'rgba(37, 99, 235, 0.15)';
-            ctx.fill();
-
-            // Radius Line to Point P
-            ctx.beginPath();
-            ctx.moveTo(circleCenterX, circleCenterY);
-            ctx.lineTo(px, py);
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
-
-            // Component Projections
-            ctx.beginPath();
-            ctx.setLineDash([3, 3]);
-            ctx.moveTo(px, py);
-            ctx.lineTo(px, circleCenterY); // Vertical Component (sin)
-            ctx.strokeStyle = '#16a34a';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(px, py);
-            ctx.lineTo(circleCenterX, py); // Horizontal Component (cos)
-            ctx.strokeStyle = '#9333ea';
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Point P Dot
-            ctx.beginPath();
-            ctx.arc(px, py, 6, 0, 2 * Math.PI);
-            ctx.fillStyle = '#2563eb';
-            ctx.fill();
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Point P Label
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 11px Plus Jakarta Sans';
-            ctx.fillText(`P (${Math.cos(rad).toFixed(2)}, ${Math.sin(rad).toFixed(2)})`, px + 8, py - 8);
-
-            // --- 2. DRAW RIGHT CARTESIAN GRAPH ---
-            // Grid Lines
-            ctx.strokeStyle = '#f1f5f9';
-            ctx.lineWidth = 1;
-
-            [-1, -0.5, 0.5, 1].forEach(v => {
-                const gy = graphCenterY - v * scaleY;
-                ctx.beginPath();
-                ctx.moveTo(graphStartX, gy);
-                ctx.lineTo(graphStartX + graphWidth, gy);
-                ctx.stroke();
-
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '10px Fira Code';
-                ctx.fillText(v.toFixed(1), graphStartX - 24, gy + 3);
-            });
-
-            // Cartesian Axes
-            ctx.strokeStyle = '#475569';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(graphStartX, graphCenterY);
-            ctx.lineTo(graphStartX + graphWidth + 10, graphCenterY);
-            ctx.moveTo(graphStartX, 20);
-            ctx.lineTo(graphStartX, h - 20);
-            ctx.stroke();
-
-            // Sumbu X & Y Labels
-            ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 11px Plus Jakarta Sans';
-            ctx.fillText('θ (Sudut)', graphStartX + graphWidth - 10, graphCenterY + 28);
-            ctx.fillText('y', graphStartX - 10, 15);
-
-            // Ticks and Labels for Degrees & Radians
-            const angleTicks = [
-                { deg: 0, rad: '0' },
-                { deg: 90, rad: 'π/2' },
-                { deg: 180, rad: 'π' },
-                { deg: 270, rad: '3π/2' },
-                { deg: 360, rad: '2π' }
-            ];
-
-            angleTicks.forEach(t => {
-                const gx = graphStartX + (t.deg / 360) * graphWidth;
-                ctx.beginPath();
-                ctx.moveTo(gx, graphCenterY - 4);
-                ctx.lineTo(gx, graphCenterY + 4);
-                ctx.strokeStyle = '#334155';
-                ctx.stroke();
-
-                ctx.fillStyle = '#334155';
-                ctx.font = 'bold 10px Plus Jakarta Sans';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${t.deg}°`, gx, graphCenterY + 16);
-                ctx.fillStyle = '#64748b';
-                ctx.font = '10px Fira Code';
-                ctx.fillText(t.rad, gx, graphCenterY + 28);
-            });
-            ctx.textAlign = 'left';
-
-            // Tangent Asymptote Lines
-            if (circleFunc === 'tan') {
-                [90, 270].forEach(asympDeg => {
-                    const ax = graphStartX + (asympDeg / 360) * graphWidth;
-                    ctx.beginPath();
-                    ctx.setLineDash([4, 4]);
-                    ctx.moveTo(ax, 20);
-                    ctx.lineTo(ax, h - 20);
-                    ctx.strokeStyle = '#ef4444';
-                    ctx.lineWidth = 1.5;
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-
-                    ctx.fillStyle = '#ef4444';
-                    ctx.font = '9px Plus Jakarta Sans';
-                    ctx.fillText('Asimtot', ax - 16, 32);
-                });
-            }
-
-            // Draw Dynamic Function Curve
-            ctx.beginPath();
-            ctx.lineWidth = 2.5;
-            ctx.strokeStyle = circleFunc === 'sin' ? '#2563eb' : (circleFunc === 'cos' ? '#059669' : '#7c3aed');
-
-            let started = false;
-            for (let a = 0; a <= 360; a += 1.5) {
-                const r = a * Math.PI / 180;
-                let val = 0;
-                if (circleFunc === 'sin') val = Math.sin(r);
-                else if (circleFunc === 'cos') val = Math.cos(r);
-                else val = Math.tan(r);
-
-                const gx = graphStartX + (a / 360) * graphWidth;
-                const gy = graphCenterY - val * scaleY;
-
-                if (circleFunc === 'tan' && Math.abs(val) > 2.5) {
-                    started = false;
-                    continue;
-                }
-
-                if (!started) {
-                    ctx.moveTo(gx, gy);
-                    started = true;
-                } else {
-                    ctx.lineTo(gx, gy);
-                }
-            }
-            ctx.stroke();
-
-            // Tracer Line
-            let targetVal = Math.sin(rad);
-            if (circleFunc === 'cos') targetVal = Math.cos(rad);
-            else if (circleFunc === 'tan') targetVal = Math.tan(rad);
-
-            const currentGx = graphStartX + (circleAngle / 360) * graphWidth;
-            const currentGy = graphCenterY - targetVal * scaleY;
-
-            if (Math.abs(targetVal) <= 2.5) {
-                ctx.beginPath();
-                ctx.setLineDash([4, 4]);
-                ctx.moveTo(px, py);
-                ctx.lineTo(currentGx, currentGy);
-                ctx.strokeStyle = '#ea580c';
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-                ctx.setLineDash([]);
-
-                ctx.beginPath();
-                ctx.arc(currentGx, currentGy, 6, 0, 2 * Math.PI);
-                ctx.fillStyle = '#ea580c';
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                ctx.fillStyle = '#0f172a';
-                ctx.font = 'bold 10px Fira Code';
-                ctx.fillText(`(${circleAngle}°, ${targetVal.toFixed(2)})`, currentGx - 20, currentGy - 10);
-            }
-        }
-
-        function setTransformFunc(fn) {
-            transformFunc = fn;
-            document.querySelectorAll('.trans-func-btn').forEach(btn => {
-                btn.className = "trans-func-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900";
-            });
-            document.getElementById(`btn-trans-${fn}`).className = "trans-func-btn py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm";
-            
-            // Update reference checkbox label dynamically
-            const refLabelEl = document.getElementById('ref-graph-label');
-            refLabelEl.innerHTML = `Tampilkan Acuan $y = \\${fn}(x)$`;
-            safeRenderMath(refLabelEl);
-
-            updateTransformParams();
-        }
-
-        function updateTransformParams() {
-            paramA = parseFloat(document.getElementById('slider-a').value);
-            paramB = parseFloat(document.getElementById('slider-b').value);
-            paramC = parseFloat(document.getElementById('slider-c').value);
-            paramD = parseFloat(document.getElementById('slider-d').value);
-
-            document.getElementById('val-slider-a').textContent = paramA.toFixed(1);
-            document.getElementById('val-slider-b').textContent = paramB.toFixed(2);
-            document.getElementById('val-slider-c').textContent = `${paramC}°`;
-            document.getElementById('val-slider-d').textContent = paramD.toFixed(1);
-
-            document.getElementById('stat-amp').textContent = Math.abs(paramA).toFixed(1);
-            const periodDeg = (360 / Math.abs(paramB)).toFixed(0);
-            document.getElementById('stat-period').textContent = `${periodDeg}°`;
-            document.getElementById('stat-phase').textContent = `${paramC}°`;
-            document.getElementById('stat-vert').textContent = paramD.toFixed(1);
-
-            // Render Math Expression dynamically
-            const signC = paramC >= 0 ? `- ${paramC}^\\circ` : `+ ${Math.abs(paramC)}^\\circ`;
-            const signD = paramD >= 0 ? `+ ${paramD}` : `- ${Math.abs(paramD)}`;
-            
-            const eqContainer = document.getElementById('display-equation-math');
-            const mathStr = `y = ${paramA.toFixed(1)} \\cdot \\text{${transformFunc}}\\left( ${paramB.toFixed(2)} (x ${signC}) \\right) ${signD}`;
-            
-            if (window.katex) {
-                katex.render(mathStr, eqContainer, { throwOnError: false });
-            }
-
-            drawTransformGraph();
-        }
-
-        function resetSliders() {
-            document.getElementById('slider-a').value = 1;
-            document.getElementById('slider-b').value = 1;
-            document.getElementById('slider-c').value = 0;
-            document.getElementById('slider-d').value = 0;
-            updateTransformParams();
-        }
-
-        function drawTransformGraph() {
-            const scaled = getScaledContext('transformCanvas');
-            if (!scaled || currentLabSubtab !== 'transform') return;
-            const { ctx, width: w, height: h } = scaled;
-
-            ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, w, h);
-
-            const originX = w * 0.12;
-            const originY = h / 2;
-            const scaleX = (w * 0.8) / 360;
-            const scaleY = h / 8; // 1 unit height
-
-            // Draw Background Grid Lines
-            ctx.strokeStyle = '#f1f5f9';
-            ctx.lineWidth = 1;
-            for (let yVal = -3; yVal <= 3; yVal += 1) {
-                const gy = originY - yVal * scaleY;
-                ctx.beginPath();
-                ctx.moveTo(0, gy);
-                ctx.lineTo(w, gy);
-                ctx.stroke();
-
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '10px Fira Code';
-                ctx.fillText(yVal.toFixed(1), originX - 25, gy + 3);
-            }
-
-            // Midline y = D
-            const midlineY = originY - paramD * scaleY;
-            ctx.beginPath();
-            ctx.setLineDash([4, 4]);
-            ctx.moveTo(0, midlineY);
-            ctx.lineTo(w, midlineY);
-            ctx.strokeStyle = '#d97706';
-            ctx.lineWidth = 1.5;
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            ctx.fillStyle = '#d97706';
-            ctx.font = 'bold 10px Plus Jakarta Sans';
-            ctx.fillText(`Midline y = ${paramD.toFixed(1)}`, w - 100, midlineY - 6);
-
-            // Main Cartesian Axes
-            ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(0, originY);
-            ctx.lineTo(w, originY);
-            ctx.moveTo(originX, 0);
-            ctx.lineTo(originX, h);
-            ctx.stroke();
-
-            // Ticks
-            const ticks = [0, 90, 180, 270, 360];
-            ctx.fillStyle = '#334155';
-            ctx.font = 'bold 10px Plus Jakarta Sans';
-            ctx.textAlign = 'center';
-            ticks.forEach(deg => {
-                const tx = originX + deg * scaleX;
-                ctx.beginPath();
-                ctx.moveTo(tx, originY - 4);
-                ctx.lineTo(tx, originY + 4);
-                ctx.stroke();
-                ctx.fillText(`${deg}°`, tx, originY + 16);
-            });
-            ctx.textAlign = 'left';
-
-            // 1. Dynamic Reference Curve (sin / cos / tan based on selection)
-            if (document.getElementById('check-ref-graph').checked) {
-                ctx.beginPath();
-                ctx.strokeStyle = '#94a3b8';
-                ctx.lineWidth = 1.5;
-                ctx.setLineDash([3, 3]);
-
-                let startedRef = false;
-                for (let deg = -30; deg <= 390; deg += 1.5) {
-                    const rad = deg * Math.PI / 180;
-                    let yRef = 0;
-                    if (transformFunc === 'sin') yRef = Math.sin(rad);
-                    else if (transformFunc === 'cos') yRef = Math.cos(rad);
-                    else yRef = Math.tan(rad);
-
-                    const gx = originX + deg * scaleX;
-                    const gy = originY - yRef * scaleY;
-
-                    if (transformFunc === 'tan' && Math.abs(yRef) > 4) {
-                        startedRef = false;
-                        continue;
-                    }
-
-                    if (!startedRef) {
-                        ctx.moveTo(gx, gy);
-                        startedRef = true;
-                    } else {
-                        ctx.lineTo(gx, gy);
-                    }
-                }
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-
-            // 2. Transformed Main Curve
-            ctx.beginPath();
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 2.5;
-
-            let started = false;
-            for (let deg = -30; deg <= 390; deg += 1.5) {
-                const rad = (paramB * (deg - paramC)) * Math.PI / 180;
-                let yVal = 0;
-                if (transformFunc === 'sin') yVal = paramA * Math.sin(rad) + paramD;
-                else if (transformFunc === 'cos') yVal = paramA * Math.cos(rad) + paramD;
-                else yVal = paramA * Math.tan(rad) + paramD;
-
-                const gx = originX + deg * scaleX;
-                const gy = originY - yVal * scaleY;
-
-                if (transformFunc === 'tan' && Math.abs(yVal) > 4) {
-                    started = false;
-                    continue;
-                }
-
-                if (!started) {
-                    ctx.moveTo(gx, gy);
-                    started = true;
-                } else {
-                    ctx.lineTo(gx, gy);
-                }
-            }
-            ctx.stroke();
-        }
-
-        function generateNewGameChallenge() {
-            const funcs = ['sin', 'cos', 'tan'];
-            const possibleA = [-2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2];
-            const possibleB = [0.5, 1, 1.5, 2];
-            const possibleC = [-90, -60, -30, 0, 30, 60, 90];
-            const possibleD = [-1.5, -1, -0.5, 0, 0.5, 1, 1.5];
-
-            gameTarget.func = funcs[Math.floor(Math.random() * funcs.length)];
-            gameTarget.a = possibleA[Math.floor(Math.random() * possibleA.length)];
-            gameTarget.b = possibleB[Math.floor(Math.random() * possibleB.length)];
-            gameTarget.c = possibleC[Math.floor(Math.random() * possibleC.length)];
-            gameTarget.d = possibleD[Math.floor(Math.random() * possibleD.length)];
-
-            document.getElementById('game-success-message').classList.add('hidden');
-            updateGameUserParams();
-        }
-
-        function setGameUserFunc(fn) {
-            gameUser.func = fn;
-            document.querySelectorAll('.game-func-btn').forEach(btn => {
-                btn.className = "game-func-btn py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900";
-            });
-            document.getElementById(`btn-game-func-${fn}`).className = "game-func-btn py-1.5 rounded-lg text-xs font-bold transition bg-blue-600 text-white shadow-sm";
-            updateGameUserParams();
-        }
-
-        function updateGameUserParams() {
-            gameUser.a = parseFloat(document.getElementById('game-slider-a').value);
-            gameUser.b = parseFloat(document.getElementById('game-slider-b').value);
-            gameUser.c = parseFloat(document.getElementById('game-slider-c').value);
-            gameUser.d = parseFloat(document.getElementById('game-slider-d').value);
-
-            document.getElementById('game-val-a').textContent = gameUser.a.toFixed(1);
-            document.getElementById('game-val-b').textContent = gameUser.b.toFixed(1);
-            document.getElementById('game-val-c').textContent = `${gameUser.c}°`;
-            document.getElementById('game-val-d').textContent = gameUser.d.toFixed(1);
-
-            // Render Dynamic User Equation in Tantangan
-            const signC = gameUser.c >= 0 ? `- ${gameUser.c}^\\circ` : `+ ${Math.abs(gameUser.c)}^\\circ`;
-            const signD = gameUser.d >= 0 ? `+ ${gameUser.d}` : `- ${Math.abs(gameUser.d)}`;
-            const userEqMath = `y = ${gameUser.a.toFixed(1)} \\cdot \\${gameUser.func}\\left(${gameUser.b.toFixed(1)}(x ${signC})\\right) ${signD}`;
-
-            const userEqContainer = document.getElementById('game-user-equation-math');
-            if (window.katex && userEqContainer) {
-                katex.render(userEqMath, userEqContainer, { throwOnError: false });
-            }
-
-            drawGameCanvas();
-            calculateMatchPercentage();
-        }
-
-        function calculateMatchPercentage() {
-            const diffA = Math.abs(gameTarget.a - gameUser.a) / 6;
-            const diffB = Math.abs(gameTarget.b - gameUser.b) / 3;
-            const diffC = Math.abs(gameTarget.c - gameUser.c) / 360;
-            const diffD = Math.abs(gameTarget.d - gameUser.d) / 4;
-            const funcMatch = gameTarget.func === gameUser.func ? 0 : 0.5;
-
-            const totalDiff = (diffA + diffB + diffC + diffD + funcMatch) / 5;
-            let match = Math.max(0, Math.round((1 - totalDiff) * 100));
-
-            if (gameTarget.func === gameUser.func && gameTarget.a === gameUser.a && gameTarget.b === gameUser.b && 
-                gameTarget.c === gameUser.c && gameTarget.d === gameUser.d) {
-                match = 100;
-                
-                const targetSignC = gameTarget.c >= 0 ? `- ${gameTarget.c}^\\circ` : `+ ${Math.abs(gameTarget.c)}^\\circ`;
-                const targetSignD = gameTarget.d >= 0 ? `+ ${gameTarget.d}` : `- ${Math.abs(gameTarget.d)}`;
-                const targetEqStr = `y = ${gameTarget.a} \\cdot \\${gameTarget.func}(${gameTarget.b}(x ${targetSignC})) ${targetSignD}`;
-
-                const targetMsgEl = document.getElementById('game-target-eq-success');
-                targetMsgEl.innerHTML = `Selamat! Persamaan target: $${targetEqStr}$`;
-                safeRenderMath(targetMsgEl);
-
-                document.getElementById('game-success-message').classList.remove('hidden');
-            }
-
-            document.getElementById('game-match-percent').textContent = `${match}%`;
-        }
-
-        function drawGameCanvas() {
-            const scaled = getScaledContext('gameCanvas');
-            if (!scaled || currentTab !== 'tantangan') return;
-            const { ctx, width: w, height: h } = scaled;
-
-            ctx.clearRect(0, 0, w, h);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, w, h);
-
-            const originX = w * 0.12;
-            const originY = h / 2;
-            const scaleX = (w * 0.8) / 360;
-            const scaleY = h / 8;
-
-            // Background Grid Lines
-            ctx.strokeStyle = '#f1f5f9';
-            ctx.lineWidth = 1;
-            for (let yVal = -3; yVal <= 3; yVal += 1) {
-                const gy = originY - yVal * scaleY;
-                ctx.beginPath();
-                ctx.moveTo(0, gy);
-                ctx.lineTo(w, gy);
-                ctx.stroke();
-
-                ctx.fillStyle = '#94a3b8';
-                ctx.font = '10px Fira Code';
-                ctx.fillText(yVal.toFixed(1), originX - 25, gy + 3);
-            }
-
-            // Main Axes
-            ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 1.5;
-            ctx.beginPath();
-            ctx.moveTo(0, originY);
-            ctx.lineTo(w, originY);
-            ctx.moveTo(originX, 0);
-            ctx.lineTo(originX, h);
-            ctx.stroke();
-
-            // Sumbu Degree Ticks & Labels
-            const ticks = [0, 90, 180, 270, 360];
-            ctx.fillStyle = '#334155';
-            ctx.font = 'bold 10px Plus Jakarta Sans';
-            ctx.textAlign = 'center';
-            ticks.forEach(deg => {
-                const tx = originX + deg * scaleX;
-                ctx.beginPath();
-                ctx.moveTo(tx, originY - 4);
-                ctx.lineTo(tx, originY + 4);
-                ctx.stroke();
-                ctx.fillText(`${deg}°`, tx, originY + 16);
-            });
-            ctx.textAlign = 'left';
-
-            // 1. Target Curve (Rose Red Dashed)
-            ctx.beginPath();
-            ctx.strokeStyle = '#e11d48';
-            ctx.lineWidth = 2.5;
-            ctx.setLineDash([5, 4]);
-
-            let startedTarget = false;
-            for (let deg = 0; deg <= 360; deg += 2) {
-                const rad = (gameTarget.b * (deg - gameTarget.c)) * Math.PI / 180;
-                let yVal = 0;
-                if (gameTarget.func === 'sin') yVal = gameTarget.a * Math.sin(rad) + gameTarget.d;
-                else if (gameTarget.func === 'cos') yVal = gameTarget.a * Math.cos(rad) + gameTarget.d;
-                else yVal = gameTarget.a * Math.tan(rad) + gameTarget.d;
-
-                const gx = originX + deg * scaleX;
-                const gy = originY - yVal * scaleY;
-                
-                if (gameTarget.func === 'tan' && Math.abs(yVal) > 4) {
-                    startedTarget = false;
-                    continue;
-                }
-
-                if (!startedTarget) {
-                    ctx.moveTo(gx, gy);
-                    startedTarget = true;
-                } else {
-                    ctx.lineTo(gx, gy);
-                }
-            }
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // 2. User Curve (Royal Blue Solid)
-            ctx.beginPath();
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 2.5;
-
-            let startedUser = false;
-            for (let deg = 0; deg <= 360; deg += 2) {
-                const rad = (gameUser.b * (deg - gameUser.c)) * Math.PI / 180;
-                let yVal = 0;
-                if (gameUser.func === 'sin') yVal = gameUser.a * Math.sin(rad) + gameUser.d;
-                else if (gameUser.func === 'cos') yVal = gameUser.a * Math.cos(rad) + gameUser.d;
-                else yVal = gameUser.a * Math.tan(rad) + gameUser.d;
-
-                const gx = originX + deg * scaleX;
-                const gy = originY - yVal * scaleY;
-                
-                if (gameUser.func === 'tan' && Math.abs(yVal) > 4) {
-                    startedUser = false;
-                    continue;
-                }
-
-                if (!startedUser) {
-                    ctx.moveTo(gx, gy);
-                    startedUser = true;
-                } else {
-                    ctx.lineTo(gx, gy);
-                }
-            }
-            ctx.stroke();
-        }
-
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            container.innerHTML = '';
-
-            quizQuestions.forEach((q, idx) => {
-                const qEl = document.createElement('div');
-                qEl.className = "p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3";
-                qEl.innerHTML = `
-                    <div class="font-bold text-sm text-slate-900 flex items-start gap-2">
-                        <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs shrink-0">${idx + 1}</span>
-                        <span>${q.question}</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-8">
-                        ${q.options.map((opt, oIdx) => `
-                            <label class="p-2.5 rounded-lg border border-slate-200 bg-white hover:bg-blue-50/50 transition cursor-pointer flex items-center gap-2 text-xs text-slate-800 font-medium">
-                                <input type="radio" name="quiz-${idx}" value="${oIdx}" class="text-blue-600 focus:ring-0">
-                                <span>${opt}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                    <div id="quiz-explain-${idx}" class="hidden pl-8 p-3 rounded-lg text-xs leading-relaxed"></div>
-                `;
-                container.appendChild(qEl);
-            });
-
-            safeRenderMath(container);
-        }
-
-        function submitQuiz() {
-            let score = 0;
-            quizQuestions.forEach((q, idx) => {
-                const selected = document.querySelector(`input[name="quiz-${idx}"]:checked`);
-                const expEl = document.getElementById(`quiz-explain-${idx}`);
-                expEl.classList.remove('hidden');
-
-                if (selected && parseInt(selected.value) === q.answer) {
-                    score += 20;
-                    expEl.className = "pl-8 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs";
-                    expEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>Benar!</strong> ${q.explanation}`;
-                } else {
-                    expEl.className = "pl-8 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-900 text-xs";
-                    expEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> <strong>Kurang Tepat.</strong> ${q.explanation}`;
-                }
-            });
-
-            safeRenderMath(document.getElementById('quiz-container'));
-
-            document.getElementById('quiz-score-val').textContent = score;
-            document.getElementById('quiz-score-badge').classList.remove('hidden');
-            document.getElementById('btn-submit-quiz').classList.add('hidden');
-            document.getElementById('btn-reset-quiz').classList.remove('hidden');
-        }
-
-        function resetQuiz() {
-            document.getElementById('quiz-score-badge').classList.add('hidden');
-            document.getElementById('btn-submit-quiz').classList.remove('hidden');
-            document.getElementById('btn-reset-quiz').classList.add('hidden');
-            renderQuiz();
-        }
-
-        function saveReflection() {
-            const r1 = document.getElementById('ref-1').value;
-            const r2 = document.getElementById('ref-2').value;
-            const r3 = document.getElementById('ref-3').value;
-
-            const textToCopy = `=== JURNAL REFLEKSI TRIGOLAB ===\nPengembang: I Made Agus Suputrayasa\n\n1. Hubungan Lingkaran Satuan & Grafik Sinus:\n${r1}\n\n2. Pengaruh Parameter A dan B:\n${r2}\n\n3. Perbedaan Parameter C dan D:\n${r3}`;
-
-            const dummy = document.createElement("textarea");
-            document.body.appendChild(dummy);
-            dummy.value = textToCopy;
-            dummy.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummy);
-
-            const toast = document.getElementById('reflection-saved-toast');
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 3500);
-        }
-    </script>
+<body class="min-h-screen">
+<div class="max-w-7xl mx-auto p-3 md:p-5">
+ <header class="flex flex-wrap items-center justify-between gap-2 mb-3">
+  <div><h1 class="text-xl md:text-2xl font-extrabold">Grafika<span style="color:var(--acc)">Lab</span></h1>
+  <p class="text-xs" style="color:var(--mut)">Lab Maya Grafik Fungsi · bentuk transformasi a, h, k</p></div>
+  <div class="flex gap-2 items-center"><div id="modes" class="flex gap-2"></div><button id="fs" class="tab" title="Layar penuh">⛶</button><button id="info" class="tab">ⓘ Info</button></div>
+ </header>
+ <nav id="nav" class="flex gap-2 mb-3 overflow-x-auto"></nav>
+ <section id="v-lab">
+ <div id="types" class="flex flex-wrap gap-2 mb-3"></div>
+ <div class="grid lg:grid-cols-[280px_1fr_300px] gap-3">
+  <aside class="card p-4 order-2 lg:order-1">
+   <div class="mb-3"><div id="l1" class="text-[11px] font-semibold hidden" style="color:var(--mut)">Bentuk puncak</div>
+   <div class="mono text-center text-base font-semibold p-2 rounded-lg cursor-pointer" id="eq" style="background:var(--bg)" title="Klik untuk melihat parameter mentah"></div>
+   <div id="eqraw" class="hidden text-xs mt-1 mono" style="color:var(--mut)"></div>
+   <div id="l2" class="text-[11px] font-semibold mt-2 hidden" style="color:var(--mut)">Bentuk standar</div>
+   <div class="mono text-center text-base font-semibold p-2 rounded-lg hidden" id="eq2" style="background:var(--bg)"></div>
+   <div id="eqmode" class="hidden flex gap-1 justify-center mt-2"></div>
+   <div id="ratmode" class="hidden flex gap-1 justify-center mt-2 flex-wrap"></div><div id="ratcap" class="hidden text-xs text-center mt-1" style="color:var(--mut)"></div></div>
+   <div id="sliders" class="space-y-3"></div>
+   <div class="mt-4 space-y-2 text-sm">
+    <label class="flex gap-2 items-center"><input type="checkbox" id="tGhost" checked> Ghost graph (fungsi induk)</label>
+    <label class="flex gap-2 items-center"><input type="checkbox" id="tAsym" checked> Tampilkan asimtot / sumbu simetri</label>
+    <label class="flex gap-2 items-center"><input type="checkbox" id="tDom" checked> Sorot area di luar domain</label>
+    <label class="flex gap-2 items-center hidden" id="invWrap"><input type="checkbox" id="tInv"> Mode invers (cermin y = x)</label>
+   </div>
+   <button id="reset" class="tab mt-4 w-full text-center">Reset parameter</button>
+   <div id="modeBox" class="mt-4 text-sm"></div>
+  </aside>
+  <main class="card order-1 lg:order-2 relative overflow-hidden" style="height:min(70vh,560px);min-height:340px">
+   <canvas id="cv"></canvas>
+   <div class="absolute bottom-2 left-3 text-[11px]" style="color:var(--mut)">Geser = pan · roda/cubit = zoom</div>
+   <button id="home" class="tab absolute top-2 right-2">⌂ Pusat</button>
+   <button id="tbtn" class="tab absolute top-2 left-2" title="Tabel nilai">⊞ Tabel</button>
+  </main>
+  <aside class="card p-4 order-3">
+   <h2 class="font-extrabold text-sm mb-2">Analisis Karakteristik</h2>
+   <div id="analysis"></div>
+   <div id="shift" class="mt-3 text-sm p-3 rounded-lg" style="background:var(--bg)"></div>
+  </aside>
+ </div>
+ </section>
+ <section id="v-materi" class="hidden"></section>
+ <section id="v-evaluasi" class="hidden"></section>
+ <section id="v-refleksi" class="hidden"></section>
+</div>
+<div id="tw" class="card hidden" style="position:fixed;z-index:30;width:min(250px,92vw);left:8px;top:120px;box-shadow:0 10px 30px rgba(0,0,0,.25)">
+ <div id="twh" class="flex justify-between items-center px-3 py-2" style="cursor:move;touch-action:none;border-bottom:1px solid var(--line)"><b class="text-sm">Tabel Nilai <span data-tex="f(x)"></span></b><span class="flex gap-1"><button id="twmin" class="tab" style="padding:0 8px">–</button><button id="twx" class="tab" style="padding:0 8px">✕</button></span></div>
+ <div id="twb"><div class="flex flex-wrap gap-1 p-2 text-xs items-center">step <select id="tstep"><option value="1">1</option><option value="0.5">0,5</option><option value="0.1">0,1</option></select> <span data-tex="x"></span>: <input id="tfrom" type="number" value="-5" style="width:52px"> s.d. <input id="tto" type="number" value="5" style="width:52px"></div>
+  <div class="mono text-xs font-bold flex justify-around py-1" style="background:var(--bg)"><span data-tex="x"></span><span data-tex="y=f(x)"></span></div>
+  <div id="twt" style="max-height:min(300px,45vh);overflow:auto"></div></div></div>
+<div id="modal" class="modal hidden"><div class="card" id="mbody"></div></div>
+<div id="splash" class="splash"><div>
+ <svg viewBox="0 0 400 140" width="320" style="margin:0 auto 10px;display:block"><path d="M0 70H400M200 0V140" stroke="rgba(255,255,255,.25)" fill="none"/><path class="draw" stroke="#5eead4" d="M20 125Q110 -45 200 70T380 15"/><path class="draw d2" d="M20 25C120 25 160 70 200 108S320 122 380 120"/></svg>
+ <h1>Grafika<span>Lab</span></h1>
+ <p style="opacity:.8;margin-top:6px">Lab Maya Penjelajah Grafik Fungsi</p>
+ <div class="lbar"><i id="lb"></i></div><p id="lt" class="mono" style="font-size:12px;opacity:.8">Memuat… 0%</p>
+ <button id="go" class="cta hidden">Mulai Eksplorasi Lab Maya →</button>
+ <p style="margin-top:30px;font-size:12px;opacity:.6">Dikembangkan oleh I Made Agus Suputrayasa</p>
+</div></div>
+<script>
+const $=id=>document.getElementById(id);
+const fmt=v=>{if(!isFinite(v))return'—';const r=Math.round(v*100)/100;return(Object.is(r,-0)?0:r).toString().replace('.',',')};
+const lg=(x,b)=>Math.log(x)/Math.log(b);
+const T={
+ quad:{n:'Kuadrat',b:0,f:(x,p)=>p.a*(x-p.h)**2+p.k,eq:p=>`f(x) = ${fmt(p.a)}(x ${s(-p.h)})² ${s(p.k)}`},
+ abs:{n:'Nilai Mutlak',b:0,f:(x,p)=>p.a*Math.abs(x-p.h)+p.k,eq:p=>`f(x) = ${fmt(p.a)}|x ${s(-p.h)}| ${s(p.k)}`},
+ rat:{n:'Rasional',b:0,f:(x,p)=>ratForm==='gen'?(p.ga*x+p.gb)/(p.gc*x+p.gd):ratForm==='adv'?(p.qa*x*x+p.qb*x+p.qc)/(p.qp*x+p.qq):p.a/(x-p.h)+p.k,eq:p=>ratForm==='gen'?`f(x) = (${fmt(p.ga)}x ${s(p.gb)}) / (${fmt(p.gc)}x ${s(p.gd)})`:ratForm==='adv'?`f(x) = (${fmt(p.qa)}x² ${s(p.qb)}x ${s(p.qc)}) / (${fmt(p.qp)}x ${s(p.qq)})`:`f(x) = ${fmt(p.a)}/(x ${s(-p.h)}) ${s(p.k)}`},
+ irr:{n:'Irasional',b:0,f:(x,p)=>p.a*Math.sqrt(x-p.h)+p.k,eq:p=>`f(x) = ${fmt(p.a)}√(x ${s(-p.h)}) ${s(p.k)}`},
+ exp:{n:'Eksponen',b:1,f:(x,p)=>p.a*Math.pow(p.b,x-p.h)+p.k,eq:p=>`f(x) = ${fmt(p.a)}·${fmt(p.b)}^(x ${s(-p.h)}) ${s(p.k)}`},
+ log:{n:'Logaritma',b:1,f:(x,p)=>p.a*lg(x-p.h,p.b)+p.k,eq:p=>`f(x) = ${fmt(p.a)}·log${fmt(p.b)}(x ${s(-p.h)}) ${s(p.k)}`}
+};
+function s(v){return(v<0?'− ':'+ ')+fmt(Math.abs(v))}
+const D={a:1,h:0,k:0,b:2,ga:0,gb:1,gc:1,gd:0,qa:1,qb:0,qc:1,qp:1,qq:0};
+let type='quad',P={...D},mode='sandbox',V={cx:0,cy:0,s:40},target=null,mi=0,msg='';
+
+// ---------- analisis ----------
+function analyze(t,p){
+ if(t==='rat'&&ratForm!=='tf')return analyzeRat(p);
+ const {a,h,k,b}=p,r={xi:[],yi:null,dom:'ℝ',ran:'ℝ',va:null,ha:null,pk:null};
+ if(a===0){r.ran='y = '+fmt(k);r.yi=k;if(k===0)r.xi=['semua x'];return r}
+ const up=a>0;
+ if(t==='quad'){r.pk=[h,k];r.yi=a*h*h+k;const q=-k/a;if(q>=0)r.xi=q===0?[h]:[h-Math.sqrt(q),h+Math.sqrt(q)];r.ran=up?`y ≥ ${fmt(k)}`:`y ≤ ${fmt(k)}`;r.axis=h}
+ if(t==='abs'){r.pk=[h,k];r.yi=a*Math.abs(h)+k;const q=-k/a;if(q>=0)r.xi=q===0?[h]:[h-q,h+q];r.ran=up?`y ≥ ${fmt(k)}`:`y ≤ ${fmt(k)}`}
+ if(t==='rat'){r.va=h;r.ha=k;r.dom=`x ≠ ${fmt(h)}`;r.ran=`y ≠ ${fmt(k)}`;if(h!==0)r.yi=k-a/h;if(k!==0)r.xi=[h-a/k]}
+ if(t==='irr'){r.pk=[h,k];r.dom=`x ≥ ${fmt(h)}`;r.ran=up?`y ≥ ${fmt(k)}`:`y ≤ ${fmt(k)}`;if(h<=0)r.yi=a*Math.sqrt(-h)+k;const q=-k/a;if(q>=0)r.xi=[h+q*q]}
+ if(t==='exp'){r.ha=k;r.ran=up?`y > ${fmt(k)}`:`y < ${fmt(k)}`;r.yi=a*Math.pow(b,-h)+k;const q=-k/a;if(q>0)r.xi=[h+lg(q,b)]}
+ if(t==='log'){r.va=h;r.dom=`x > ${fmt(h)}`;if(h<0)r.yi=a*lg(-h,b)+k;r.xi=[h+Math.pow(b,-k/a)]}
+ return r;
+}
+const ft=v=>fmt(v).replace(',','{,}'),sg=v=>(v<0?'-':'+')+ft(Math.abs(v));
+function setTex(e,t,d){try{e.innerHTML=katex.renderToString(t,{output:'mathml',displayMode:!!d,throwOnError:false})}catch(x){e.textContent=t}}
+function renderTex(r){r.querySelectorAll('[data-tex]').forEach(e=>setTex(e,e.dataset.tex,e.dataset.d==='1'))}
+const HT=t=>t.replace(/\$\$([^$]+)\$\$/g,(m,x)=>`<span data-tex="${x}" data-d="1"></span>`).replace(/\$([^$]+)\$/g,(m,x)=>`<span data-tex="${x}"></span>`);
+const T2=t=>t.replace(/≥/g,'\\geq ').replace(/≤/g,'\\leq ').replace(/≠/g,'\\neq ').replace(/ℝ/g,'\\mathbb{R}').replace(/(\d),(\d)/g,'$1{,}$2');
+const r2=v=>Math.round(v*100)/100;
+function cf(a,body,dot){const A=Math.abs(a);return(a<0?'-':'')+(A===1?'':ft(A)+(dot?'\\cdot ':''))+body}
+function texEq(){const {a,h,k,b}=P,X=h===0?'x':`x${sg(-h)}`,K=k===0?'':sg(k);
+ if(type==='rat'&&ratForm==='gen')return `f(x)=\\dfrac{${polyTex([[P.ga,'x'],[P.gb,'']])}}{${polyTex([[P.gc,'x'],[P.gd,'']])}}`;
+ if(type==='rat'&&ratForm==='adv')return `f(x)=\\dfrac{${polyTex([[P.qa,'x^{2}'],[P.qb,'x'],[P.qc,'']])}}{${polyTex([[P.qp,'x'],[P.qq,'']])}}`;
+ if(a===0)return `f(x)=${ft(k)}`;
+ if(type==='rat')return `f(x)=${a<0?'-':''}\\dfrac{${ft(Math.abs(a))}}{${X}}${K}`;
+ const B=Number.isInteger(b)?ft(b):`\\left(${ft(b)}\\right)`;
+ const body={quad:h===0?'x^{2}':`\\left(${X}\\right)^{2}`,abs:`\\left|${X}\\right|`,irr:`\\sqrt{${X}}`,exp:`${B}^{${X}}`,log:h===0?`\\log_{${ft(b)}}x`:`\\log_{${ft(b)}}\\left(${X}\\right)`}[type];
+ return `f(x)=${cf(a,body,type==='exp'||type==='log')}${K}`}
+function texStd(){const {a,h,k}=P,B=r2(-2*a*h),C=r2(a*h*h+k),tm=(v,t)=>v===0?'':(Math.abs(v)===1?(v<0?'-':'+'):sg(v))+t;
+ return `f(x)=${cf(a,'x^{2}')}${tm(B,'x')}${C===0?'':sg(C)}`}
+let eqMode='both';
+function showEq(){const q=type==='quad'&&P.a!==0,m=q?eqMode:'vertex';
+ setTex($('eq'),texEq());$('eq').classList.toggle('hidden',m==='std');
+ $('eq2').classList.toggle('hidden',!(q&&m!=='vertex'));if(q)setTex($('eq2'),texStd());
+ $('l1').classList.toggle('hidden',!(q&&m==='both'));$('l2').classList.toggle('hidden',!(q&&m!=='vertex'));
+ $('eqmode').classList.toggle('hidden',type!=='quad');
+ const rm=type==='rat'&&mode==='sandbox';$('ratmode').classList.toggle('hidden',!rm);$('ratcap').classList.toggle('hidden',!(rm&&ratForm!=='tf'));
+ document.querySelectorAll('#ratmode .tab').forEach(e=>e.classList.toggle('on',e.dataset.m===ratForm));
+ if(rm&&ratForm!=='tf'){$('ratcap').innerHTML=HT(ratForm==='gen'?'Bentuk umum $\\dfrac{ax+b}{cx+d}$: asimtot tegak dan datar.':'Mode lanjutan $\\dfrac{ax^2+bx+c}{px+q}$: asimtot tegak dan miring.');renderTex($('ratcap'))}
+ document.querySelectorAll('#eqmode .tab').forEach(e=>e.classList.toggle('on',e.dataset.m===eqMode));
+ const NM={ga:'a',gb:'b',gc:'c',gd:'d',qa:'a',qb:'b',qc:'c',qp:'p',qq:'q'};
+ const raw='Parameter: '+list().map(([n])=>(NM[n]||n)+' = '+fmt(gv(n))).join(', ')+'  →  '+T[type].eq(P);
+ $('eq').title=raw;$('eqraw').textContent=raw}
+[['both','Ganda'],['vertex','Puncak'],['std','Standar']].forEach(([m,l])=>{const b=document.createElement('button');b.className='tab';b.dataset.m=m;b.textContent=l;b.style.fontSize='11px';b.onclick=()=>{eqMode=m;if(type==='quad'){buildSliders()}render()};$('eqmode').appendChild(b)});
+$('eq').onclick=()=>$('eqraw').classList.toggle('hidden');
+function render(){
+ const A=analyze(type,P),M_=t=>`<span data-tex="${T2(t)}"></span>`,row=(l,v)=>`<div class="row"><span>${l}</span><b>${v}</b></div>`,pt=(x,y)=>M_(`(${fmt(x)},\\,${fmt(y)})`);
+ showEq();
+ let h=row('Domain',M_(A.dom))+row('Range',M_(A.ran));
+ h+=row('Titik potong sumbu '+'$x$'.replace(/.*/,m=>HT(m)),A.xi.length?A.xi.map(v=>typeof v==='string'?v:pt(v,0)).join(' ; '):'tidak ada');
+ h+=row('Titik potong sumbu '+HT('$y$'),A.yi===null?'tidak ada':pt(0,A.yi));
+ if(A.pk)h+=row(type==='irr'?'Titik awal':'Titik puncak / sudut',pt(A.pk[0],A.pk[1]));
+ if(A.axis!==undefined)h+=row('Sumbu simetri',M_(stdSl()?`x=-\\dfrac{b}{2a}=${fmt(A.axis)}`:`x=${fmt(A.axis)}`));
+ if(type==='quad'&&P.a!==0){const D=r2(-4*P.a*P.k);h+=row('Koefisien bentuk standar',M_(`b=${fmt(r2(-2*P.a*P.h))},\;c=${fmt(r2(P.a*P.h*P.h+P.k))}`));h+=row('Diskriminan',M_(`D=${fmt(D)}`))+row('Banyak akar real',D>0?'dua, berbeda':D===0?'satu (kembar)':'tidak ada')}
+ if(A.va!==null)h+=row('Asimtot tegak',M_(`x=${fmt(A.va)}`));
+ if(A.ha!==null)h+=row('Asimtot datar',M_(`y=${fmt(A.ha)}`));
+ if(['quad','abs','irr'].includes(type))h+=row('Arah',P.a>0?'terbuka ke atas':P.a<0?'terbuka ke bawah':'garis datar');
+ if(type==='exp')h+=row('Jenis',P.b>1?'pertumbuhan':'peluruhan');
+ if(A.sl)h+=row('Asimtot miring',M_(`y=${polyTex([[A.sl[0],'x'],[A.sl[1],'']])}`));
+ if(A.hole)h+=row('Lubang (titik berlubang)',pt(A.hole[0],A.hole[1]));
+ if(A.inv)h+=row('Fungsi invers',M_('f^{-1}(x)=\\dfrac{-dx+b}{cx-a}'))+row('Asimtot tegak f⁻¹',M_(`x=${fmt(A.ha)}`))+row('Asimtot datar f⁻¹',M_(`y=${fmt(A.va)}`));
+ $('analysis').innerHTML=h+(A.err?`<p class="text-xs mt-2 p-2 rounded-lg" style="background:rgba(220,38,38,.14)">⚠ ${HT(A.err)}</p>`:'')+(A.note?`<p class="text-xs mt-2 p-2 rounded-lg" style="background:var(--bg)">ℹ ${HT(A.note)}</p>`:'');
+ const d=[];
+ d.push(P.h>0?`→ bergeser ${fmt(P.h)} satuan ke <b>kanan</b>`:P.h<0?`← bergeser ${fmt(-P.h)} satuan ke <b>kiri</b>`:'tidak bergeser horizontal');
+ d.push(P.k>0?`↑ bergeser ${fmt(P.k)} satuan ke <b>atas</b>`:P.k<0?`↓ bergeser ${fmt(-P.k)} satuan ke <b>bawah</b>`:'tidak bergeser vertikal');
+ if(P.a<0)d.push('↕ <b>dicerminkan</b> terhadap sumbu '+HT('$x$')+' ('+HT('$a<0$')+')');
+ else if(Math.abs(P.a)>1)d.push('menyempit / curam ('+HT('$|a|>1$')+')');
+ else if(P.a!==0)d.push('melebar / landai ('+HT('$|a|<1$')+')');
+ $('shift').innerHTML='<b>Terhadap grafik induk:</b><br>'+d.join('<br>');$('shift').style.display=(type==='rat'&&ratForm!=='tf')?'none':'';
+ renderTex($('analysis'));renderTex($('shift'));
+ $('invWrap').classList.toggle('hidden',!invOK());
+ draw(A);checkMode();renderTable();
+}
+
+// ---------- gambar ----------
+const cv=$('cv'),ctx=cv.getContext('2d');
+const col=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function fit(){const r=cv.getBoundingClientRect(),d=devicePixelRatio||1;cv.width=r.width*d;cv.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);return r}
+const X=x=>W/2+(x-V.cx)*V.s, Y=y=>H/2-(y-V.cy)*V.s;
+let W=0,H=0;
+function curve(t,p,color,w,dash){
+ ctx.strokeStyle=color;ctx.lineWidth=w;ctx.setLineDash(dash||[]);ctx.beginPath();
+ let pen=false,py=0,px0=null;const pl=t==='rat'?ratPole(p):null;
+ for(let px=0;px<=W;px+=1){
+  const x=V.cx+(px-W/2)/V.s,y=T[t].f(x,p);if(pl!==null&&px0!==null&&(px0<pl)!==(x<pl))pen=false;px0=x;
+  if(!isFinite(y)||isNaN(y)){pen=false;continue}
+  const sy=Y(y);
+  if(Math.abs(sy)>1e5){pen=false;continue}
+  if(pen&&Math.abs(sy-py)>H*1.2)pen=false;
+  pen?ctx.lineTo(px,sy):ctx.moveTo(px,sy);pen=true;py=sy;
+ }
+ ctx.stroke();ctx.setLineDash([]);
+}
+function line(x1,y1,x2,y2,c,w,dash){ctx.strokeStyle=c;ctx.lineWidth=w;ctx.setLineDash(dash||[]);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([])}
+function dot(x,y,c,lbl){ctx.fillStyle=c;ctx.beginPath();ctx.arc(X(x),Y(y),5,0,7);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+ if(lbl){ctx.fillStyle=col('--ink');ctx.font='11px Fira Code,monospace';ctx.fillText(lbl,X(x)+8,Y(y)-8)}}
+function offArrow(px,py){const sx=X(px),sy=Y(py);if(sx>=0&&sx<=W&&sy>=0&&sy<=H)return;
+ const m=22,dx=sx-W/2,dy=sy-H/2,t=Math.min((W/2-m)/Math.abs(dx||1e-9),(H/2-m)/Math.abs(dy||1e-9)),ex=W/2+dx*t,ey=H/2+dy*t;
+ ctx.save();ctx.translate(ex,ey);ctx.rotate(Math.atan2(dy,dx));ctx.fillStyle='#dc2626';ctx.beginPath();ctx.moveTo(12,0);ctx.lineTo(-8,-8);ctx.lineTo(-8,8);ctx.closePath();ctx.fill();ctx.restore();
+ ctx.fillStyle=col('--ink');ctx.font='11px Fira Code,monospace';ctx.fillText('puncak',Math.min(Math.max(ex-22,4),W-50),Math.min(Math.max(ey-12,12),H-4))}
+function draw0(A){
+ const r=fit();W=r.width;H=r.height;ctx.clearRect(0,0,W,H);
+ const ink=col('--ink'),mut=col('--mut'),line0=col('--line');
+ let st=1;while(st*V.s<45)st*=2;while(st*V.s>110)st/=2;if(st*V.s<45)st*=2.5;
+ const x0=V.cx-W/2/V.s,x1=V.cx+W/2/V.s,y0=V.cy-H/2/V.s,y1=V.cy+H/2/V.s;
+ ctx.font='10px Fira Code,monospace';ctx.fillStyle=mut;
+ for(let x=Math.ceil(x0/st)*st;x<=x1;x+=st){line(X(x),0,X(x),H,line0,1);if(Math.abs(x)>1e-9){ctx.fillText(fmt(x),X(x)+2,Math.min(Math.max(Y(0)+12,12),H-3))}}
+ for(let y=Math.ceil(y0/st)*st;y<=y1;y+=st){line(0,Y(y),W,Y(y),line0,1);if(Math.abs(y)>1e-9){ctx.fillText(fmt(y),Math.min(Math.max(X(0)+4,2),W-30),Y(y)-3)}}
+ line(X(0),0,X(0),H,ink,1.6);line(0,Y(0),W,Y(0),ink,1.6);
+ // domain
+ if($('tDom').checked&&A&&!target||($('tDom').checked&&mode!=='tebak')){
+  const R='rgba(220,38,38,.18)';ctx.fillStyle=R;
+  if(type==='irr'||type==='log')ctx.fillRect(0,0,Math.max(0,Math.min(W,X(P.h))),H);
+  if(type==='irr'||type==='log'){ctx.fillStyle='rgba(220,38,38,.6)';ctx.fillRect(0,Y(0)-3,Math.max(0,Math.min(W,X(P.h))),6)}
+ }
+ const ghost=$('tGhost').checked;
+ if(mode==='tebak'&&target)curve(type,target,'#2563eb',3);
+ else if(ghost)curve(type,{...D,b:P.b},mut,1.8,[6,5]);
+ // asimtot
+ if($('tAsym').checked&&mode!=='tebak'&&A){
+  if(A.va!==null)line(X(A.va),0,X(A.va),H,'#dc2626',1.6,[7,5]);
+  if(A.ha!==null)line(0,Y(A.ha),W,Y(A.ha),'#dc2626',1.6,[7,5]);
+  if(A.sl){const [m_,n_]=A.sl;line(X(x0),Y(m_*x0+n_),X(x1),Y(m_*x1+n_),'#dc2626',1.6,[7,5])}if(A.axis!==undefined){line(X(A.axis),0,X(A.axis),H,'#7c3aed',1.4,[4,4]);if(stdSl()){ctx.fillStyle='#7c3aed';ctx.font='11px Fira Code,monospace';ctx.fillText('x = −b/2a = '+fmt(A.axis),Math.min(Math.max(X(A.axis)+6,4),W-140),16)}}
+ }
+ if($('tInv').checked&&invOK()&&mode!=='tebak'){
+  line(X(y0),Y(y0),X(y1),Y(y1),'#f59e0b',1.4,[3,4]);
+  ctx.strokeStyle='#f59e0b';ctx.lineWidth=2.5;ctx.beginPath();let pen=false;
+  for(let px=0;px<=W;px++){ // titik (f(x), x) dipetakan sebagai cermin y=x
+   const x=V.cx+(px-W/2)/V.s,y=T[type].f(x,P);if(!isFinite(y)){pen=false;continue}
+   const sx=X(y),sy=Y(x);if(Math.abs(sx)>1e5||Math.abs(sy)>1e5){pen=false;continue}
+   if(pen&&Math.abs(sx-draw.psx)>W*.9)pen=false;pen?ctx.lineTo(sx,sy):ctx.moveTo(sx,sy);pen=true;draw.psx=sx}
+  ctx.stroke();
+ }
+ curve(type,P,mode==='tebak'?'#dc2626':col('--acc'),3.2);
+ if(A&&mode!=='tebak'){
+  A.xi.forEach(v=>typeof v==='number'&&dot(v,0,'#f59e0b',`(${fmt(v)},0)`));
+  if(A.hole){ctx.fillStyle=col('--card');ctx.strokeStyle='#dc2626';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(X(A.hole[0]),Y(A.hole[1]),6,0,7);ctx.fill();ctx.stroke();ctx.fillStyle=col('--ink');ctx.font='11px Fira Code,monospace';ctx.fillText(`lubang (${fmt(A.hole[0])}; ${fmt(A.hole[1])})`,X(A.hole[0])+9,Y(A.hole[1])-9)}
+  if(A.yi!==null)dot(0,A.yi,'#2563eb',`(0,${fmt(A.yi)})`);
+  if(A.pk){dot(A.pk[0],A.pk[1],'#dc2626',`(${fmt(A.pk[0])},${fmt(A.pk[1])})`);offArrow(A.pk[0],A.pk[1])}
+ }
+}
+
+// ---------- UI ----------
+const SL=[['a','<span data-tex="a"></span> (lebar / refleksi)',-5,5,.1],['h','<span data-tex="h"></span> (kanan / kiri)',-8,8,.1],['k','<span data-tex="k"></span> (atas / bawah)',-8,8,.1],['b','<span data-tex="b"></span> (basis)',.2,5,.1]];
+const SLS=[SL[0],['b','<span data-tex="b"></span> (koefisien <span data-tex="x"></span>)',-20,20,.1],['c','<span data-tex="c"></span> (titik potong sumbu <span data-tex="y"></span>)',-20,20,.1]];
+let S={b:0,c:0};
+const stdSl=()=>type==='quad'&&eqMode==='std';
+const tx=(c,l)=>`<span data-tex="${c}"></span> (${l})`;
+const SLG=[['ga',tx('a','koefisien x, pembilang'),-10,10,.1],['gb',tx('b','konstanta pembilang'),-10,10,.1],['gc',tx('c','koefisien x, penyebut'),-10,10,.1],['gd',tx('d','konstanta penyebut'),-10,10,.1]];
+const SLA=[['qa',tx('a','koefisien x²'),-10,10,.1],['qb',tx('b','koefisien x'),-10,10,.1],['qc',tx('c','konstanta'),-10,10,.1],['qp',tx('p','koefisien x, penyebut'),-10,10,.1],['qq',tx('q','konstanta penyebut'),-10,10,.1]];
+const list=()=>stdSl()?SLS:(type==='rat'&&ratForm==='gen')?SLG:(type==='rat'&&ratForm==='adv')?SLA:SL.filter(x=>x[0]!=='b'||T[type].b);
+const gv=n=>stdSl()&&n==='b'?r2(-2*P.a*P.h):stdSl()&&n==='c'?r2(P.a*P.h*P.h+P.k):P[n];
+const syncS=()=>{if(stdSl()){if(P.a===0)P.a=.1;S.b=r2(-2*P.a*P.h);S.c=r2(P.a*P.h*P.h+P.k)}};
+function buildSliders(){
+ syncS();
+ $('sliders').innerHTML=list().map(([n,l,mn,mx,st])=>`
+ <div><div class="flex justify-between text-sm font-semibold"><span>${l}</span><span class="mono" id="v_${n}">${fmt(gv(n))}</span></div>
+ <input type="range" id="s_${n}" min="${mn}" max="${mx}" step="${st}" value="${gv(n)}"></div>`).join('')+(stdSl()?'<p class="text-xs" style="color:var(--mut)">'+HT('Mode standar: $b$ dan $c$ dipertahankan saat $a$ diubah. Sumbu simetri $x=-\\dfrac{b}{2a}$ dan titik $(0,\\,c)$ ditandai di kanvas.')+'</p>':'');
+ renderTex($('sliders'));
+ list().forEach(([n])=>{const e=$('s_'+n);e.oninput=()=>{let v=+e.value;
+  if(stdSl()){v=Math.round(v*10)/10;if(n==='a'){if(v===0){v=.1;e.value=v}P.a=v}else S[n]=v;
+   P.h=Math.round(-S.b/(2*P.a)*1e6)/1e6;P.k=Math.round((S.c-S.b*S.b/(4*P.a))*1e6)/1e6}
+  else{if(n==='b'&&Math.abs(v-1)<.05)v=1.1;if(n!=='b')v=Math.round(v*10)/10;P[n]=v}
+  $('v_'+n).textContent=fmt(v);render()}});
+}
+function setSliders(){syncS();list().forEach(([n])=>{const e=$('s_'+n);if(e){e.value=gv(n);$('v_'+n).textContent=fmt(gv(n))}})}
+function setType(t,keep){type=t;if(!keep)P={...D};buildSliders();document.querySelectorAll('#types .tab').forEach(e=>e.classList.toggle('on',e.dataset.t===t));
+ if(!invOK())$('tInv').checked=false;V={cx:0,cy:0,s:40};if(mode==='tebak')newTarget();render()}
+Object.keys(T).forEach(t=>{const b=document.createElement('button');b.className='tab';b.dataset.t=t;b.textContent=T[t].n;b.onclick=()=>{if(mode==='misi')return;setType(t)};$('types').appendChild(b)});
+[['sandbox','Sandbox'],['misi','Misi'],['tebak','Tebak Fungsi']].forEach(([m,l])=>{const b=document.createElement('button');b.className='tab';b.dataset.m=m;b.textContent=l;b.onclick=()=>setMode(m);$('modes').appendChild(b)});
+$('reset').onclick=()=>{P={...D};setSliders();render()};
+$('home').onclick=()=>{V={cx:0,cy:0,s:40};render()};
+['tGhost','tAsym','tDom','tInv'].forEach(i=>$(i).onchange=render);
+
+// ---------- Misi & Tebak ----------
+const M=[
+ {t:'quad',q:'Geser $h$ agar titik puncak fungsi kuadrat berada di $x=3$.',ok:p=>p.h===3,hint:'Titik puncak berada di $(h,\\,k)$.'},
+ {t:'quad',q:'Buat parabola terbuka ke bawah dengan titik puncak $(-2,\\,4)$.',ok:p=>p.a<0&&p.h===-2&&p.k===4,hint:'Nilai $a<0$ membuat parabola terbuka ke bawah.'},
+ {t:'abs',q:'Buat grafik "V" dengan titik sudut $(1,\\,-3)$ dan lengan lebih curam dari induknya ($|a|>1$).',ok:p=>p.h===1&&p.k===-3&&Math.abs(p.a)>1,hint:'Titik sudut berada di $(h,\\,k)$.'},
+ {t:'rat',q:'Buat fungsi rasional yang tidak pernah memotong sumbu $y$.',ok:p=>p.h===0&&p.a!==0,hint:'Apa yang terjadi pada penyebut $x-h$ saat $x=0$?'},
+ {t:'irr',q:'Buat fungsi akar dengan domain $x\\geq 2$ dan range $y\\geq 1$.',ok:p=>p.h===2&&p.k===1&&p.a>0,hint:'Domain dimulai dari $h$, range dimulai dari $k$.'},
+ {t:'exp',q:'Buat fungsi eksponen peluruhan ($0<b<1$) dengan asimtot datar $y=-3$.',ok:p=>p.b<1&&p.k===-3&&p.a>0,hint:'Asimtot datar berada di $y=k$.'},
+ {t:'log',q:'Buat fungsi logaritma dengan asimtot tegak $x=-1$ dan $b>1$.',ok:p=>p.h===-1&&p.b>1&&p.a>0,hint:'Syarat numerus: $x-h>0$.'},
+ {t:'quad',std:true,q:'Pada mode Standar, buat parabola dengan $a=1$, sumbu simetri $x=2$, dan memotong sumbu $y$ di $(0,\\,-3)$.',ok:p=>p.a===1&&Math.abs(p.h-2)<1e-6&&Math.abs(p.a*p.h*p.h+p.k+3)<1e-6,hint:'Sumbu simetri $x=-\\dfrac{b}{2a}$; titik potong sumbu $y$ adalah $(0,\\,c)$.'},
+ {t:'quad',std:true,q:'Atur $a=1$ dan $c=9$, lalu cari nilai $b$ agar parabola menyentuh sumbu $x$ tepat di satu titik.',ok:p=>p.a===1&&Math.abs(p.k)<1e-6&&Math.abs(p.a*p.h*p.h+p.k-9)<1e-6,hint:'Syarat satu titik singgung: $D=b^2-4ac=0$.'}
+];
+function setMode(m){mode=m;msg='';if(m!=='sandbox')ratForm='tf';document.querySelectorAll('#modes .tab').forEach(e=>e.classList.toggle('on',e.dataset.m===m));
+ document.querySelectorAll('#types .tab').forEach(e=>e.style.opacity=m==='misi'?.5:1);
+ if(m==='misi'){mi=0;P={...D};if(M[mi].t==='quad')eqMode=M[mi].std?'std':'both';setType(M[mi].t)}else if(m==='tebak'){setType(type)}else{target=null;render()}
+ renderModeBox()}
+function newTarget(){const r=(a,b)=>Math.round(a+Math.random()*(b-a));let a=r(-3,3);if(!a)a=2;
+ target={a,h:r(-4,4),k:r(-4,4),b:type==='exp'||type==='log'?[2,3,.5][r(0,2)]:2};P={...D,b:target.b===.5?.5:P.b};buildSliders();msg=''}
+function renderModeBox(){
+ const b=$('modeBox');
+ if(mode==='sandbox')b.innerHTML=HT('<b>Mode Sandbox:</b> geser slider $a$, $h$, $k$ secara bebas dan amati perubahan grafik, titik potong, serta asimtotnya.');
+ if(mode==='misi'){const m=M[mi];b.innerHTML=`<div class="p-3 rounded-lg" style="background:var(--bg)"><b>Misi ${mi+1}/${M.length}</b><p class="my-1">${HT(m.q)}</p><p class="text-xs" style="color:var(--mut)">Petunjuk: ${HT(m.hint)}</p><p class="mt-2 font-bold" id="msg">${msg}</p><button class="tab mt-2" id="next" style="display:none">Misi berikutnya →</button></div>`;
+  $('next').onclick=()=>{mi=(mi+1)%M.length;msg='';P={...D};if(M[mi].t==='quad')eqMode=M[mi].std?'std':'both';setType(M[mi].t);renderModeBox()}}
+ if(mode==='tebak'){b.innerHTML=`<div class="p-3 rounded-lg" style="background:var(--bg)"><b>Tebak Fungsi</b><p class="my-1">${HT('Atur $a$, $h$, $k$'+(T[type].b?', $b$':'')+' sampai grafik <span style="color:#dc2626;font-weight:700">merah</span> menumpuk grafik <span style="color:#2563eb;font-weight:700">biru</span>.')}</p><p class="font-bold" id="msg">${msg}</p><button class="tab mt-2" id="nt">Soal baru</button></div>`;
+  $('nt').onclick=()=>{newTarget();render();renderModeBox()}}
+ renderTex(b);
+}
+function checkMode(){
+ if(mode==='misi'){const ok=M[mi].ok(P);const m=$('msg');if(m){m.textContent=ok?'✅ Benar! Misi selesai.':'';m.style.color='#16a34a';$('next').style.display=ok?'inline-block':'none'}}
+ if(mode==='tebak'&&target){const keys=T[type].b?['a','h','k','b']:['a','h','k'];const d=keys.reduce((s,k)=>s+Math.abs(P[k]-target[k]),0);const m=$('msg');
+  if(m){const ok=d<.15;m.textContent=ok?'✅ Tepat! Fungsi berhasil ditebak.':'Selisih parameter: '+fmt(d);m.style.color=ok?'#16a34a':'var(--mut)'}}
+}
+
+// ---------- pan & zoom ----------
+const ptrs=new Map();let lastD=0;
+cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);lastD=0});
+cv.addEventListener('pointerup',e=>ptrs.delete(e.pointerId));
+cv.addEventListener('pointermove',e=>{
+ if(!ptrs.has(e.pointerId))return;const o=ptrs.get(e.pointerId);ptrs.set(e.pointerId,[e.clientX,e.clientY]);
+ if(ptrs.size===1){V.cx-=(e.clientX-o[0])/V.s;V.cy+=(e.clientY-o[1])/V.s}
+ else if(ptrs.size===2){const [p,q]=[...ptrs.values()],d=Math.hypot(p[0]-q[0],p[1]-q[1]);if(lastD)V.s=Math.min(300,Math.max(8,V.s*d/lastD));lastD=d}
+ render()});
+cv.addEventListener('wheel',e=>{e.preventDefault();V.s=Math.min(300,Math.max(8,V.s*(e.deltaY<0?1.1:.9)));render()},{passive:false});
+addEventListener('resize',render);
+
+let ratForm='tf';
+function polyTex(ts){let o='';ts.forEach(([v,t])=>{v=r2(v);if(!v)return;const A=Math.abs(v),c=(A===1&&t)?'':ft(A);o+=(v<0?'-':(o?'+':''))+c+t});return o||'0'}
+const invOK=()=>type==='exp'||type==='log'||(type==='rat'&&ratForm==='gen');
+function ratPole(p=P){if(ratForm==='gen')return Math.abs(p.gc)<1e-9?null:-p.gd/p.gc;if(ratForm==='adv')return Math.abs(p.qp)<1e-9?null:-p.qq/p.qp;return p.h}
+const undef=x=>{if(type!=='rat')return false;const pl=ratPole();return pl!==null&&Math.abs(x-pl)<1e-9};
+function analyzeRat(p){
+ const r={xi:[],yi:null,dom:'ℝ',ran:'ℝ',va:null,ha:null,pk:null},z=v=>Math.abs(v)<1e-9,bad='\\text{tidak terdefinisi}';
+ if(ratForm==='gen'){const a=p.ga,b=p.gb,c=p.gc,d=p.gd;
+  if(z(c)){if(z(d)){r.err='Penyebut tidak boleh bernilai $0$.';r.dom=bad;r.ran=bad;return r}
+   r.note='Karena $c=0$, fungsi berubah menjadi fungsi linear.';r.yi=b/d;if(!z(a))r.xi=[-b/a];else{r.ran=`y = ${fmt(b/d)}`;if(z(b))r.xi=['semua x']}return r}
+  const x0=-d/c,y0=a/c;r.dom=`x ≠ ${fmt(x0)}`;
+  if(z(a*d-b*c)){r.note=`Karena $ad-bc=0$, fungsi menjadi konstan $y=${ft(y0)}$ dengan lubang di $x=${ft(x0)}$.`;r.hole=[x0,y0];r.ran=`y = ${fmt(y0)}`;if(z(y0))r.xi=['semua x ≠ '+fmt(x0)];if(!z(d))r.yi=b/d;return r}
+  r.va=x0;r.ha=y0;r.ran=`y ≠ ${fmt(y0)}`;r.inv=true;if(!z(a))r.xi=[-b/a];if(!z(d))r.yi=b/d;return r}
+ const a=p.qa,b=p.qb,c=p.qc,pp=p.qp,q=p.qq;
+ if(z(pp)){if(z(q)){r.err='Penyebut tidak boleh bernilai $0$.';r.dom=bad;r.ran=bad;return r}
+  r.note='Karena $p=0$, fungsi berubah menjadi fungsi kuadrat (atau linear).';r.yi=c/q;
+  if(z(a)){if(!z(b))r.xi=[-c/b]}else{const Dd=b*b-4*a*c;if(Dd>=0){const sq=Math.sqrt(Dd);r.xi=Dd===0?[-b/(2*a)]:[(-b-sq)/(2*a),(-b+sq)/(2*a)]}}return r}
+ const x0=-q/pp,m=a/pp,n=(b-m*q)/pp,R=c-n*q;r.dom=`x ≠ ${fmt(x0)}`;
+ let rt=[];if(z(a)){if(!z(b))rt=[-c/b]}else{const Dd=b*b-4*a*c;if(Dd>=0){const sq=Math.sqrt(Dd);rt=Dd===0?[-b/(2*a)]:[(-b-sq)/(2*a),(-b+sq)/(2*a)]}}
+ r.xi=rt.filter(v=>Math.abs(v-x0)>1e-9).sort((u,v)=>u-v);if(!z(q))r.yi=c/q;
+ if(z(R)){r.hole=[x0,m*x0+n];r.note=`Pembilang habis dibagi penyebut: fungsi menjadi linear $y=${polyTex([[m,'x'],[n,'']])}$ dengan lubang di $x=${ft(x0)}$.`;r.ran=z(m)?`y = ${fmt(n)}`:`y ≠ ${fmt(m*x0+n)}`;return r}
+ r.va=x0;
+ if(z(a)){r.ha=n;r.ran=`y ≠ ${fmt(n)}`;r.note='Karena $a=0$, derajat pembilang sama dengan penyebut sehingga asimtotnya datar, bukan miring.';return r}
+ r.sl=[m,n];const A2=pp*pp,B2=4*a*q-2*b*pp,C2=b*b-4*a*c,Dy=B2*B2-4*A2*C2;
+ if(Dy<=1e-9)r.ran='ℝ';else{const sq=Math.sqrt(Dy);r.ran=`y ≤ ${fmt((-B2-sq)/(2*A2))} \\text{ atau } y ≥ ${fmt((-B2+sq)/(2*A2))}`}
+ return r}
+[['tf','Transformasi'],['gen','Umum'],['adv','Lanjutan']].forEach(([m,l])=>{const b=document.createElement('button');b.className='tab';b.dataset.m=m;b.textContent=l;b.style.fontSize='11px';b.onclick=()=>{ratForm=m;buildSliders();render()};$('ratmode').appendChild(b)});
+let hl=null,twOpen=false,twPlaced=false;
+function draw(A){draw0(A);drawHl()}
+function drawHl(){if(!hl)return;const y=T[type].f(hl.x,P);if(!isFinite(y)||undef(hl.x))return;
+ const px=X(hl.x),py=Y(y);line(px,py,px,Y(0),'#2563eb',1.5,[5,4]);line(px,py,X(0),py,'#2563eb',1.5,[5,4]);dot(hl.x,y,'#2563eb',`(${fmt(hl.x)}; ${fmt(y)})`)}
+const redraw=()=>draw(analyze(type,P));
+function renderTable(){if(!twOpen||$('tw').classList.contains('hidden'))return;
+ const st=+$('tstep').value;let a=+$('tfrom').value,b=+$('tto').value;if(!isFinite(a)||!isFinite(b))return;if(a>b)[a,b]=[b,a];
+ const n=Math.min(400,Math.floor((b-a)/st+1e-9));let h='<table class="w-full text-sm mono">';
+ for(let i=0;i<=n;i++){const x=Math.round((a+i*st)*1000)/1000,y=T[type].f(x,P);let c;
+  if(undef(x))c='<span class="na">Tak terdefinisi</span>';
+  else if(!isFinite(y))c=`<span class="na">${type==='irr'||type==='log'?'Luar domain':'Tak terdefinisi'}</span>`;
+  else c=fmt(y);
+  h+=`<tr data-x="${x}"${hl&&Math.abs(hl.x-x)<1e-9?' class="sel"':''}><td>${fmt(x)}</td><td>${c}</td></tr>`}
+ $('twt').innerHTML=h+'</table>'}
+function clampTw(){const w=$('tw'),r=w.getBoundingClientRect();w.style.left=Math.max(0,Math.min(r.left,innerWidth-r.width))+'px';w.style.top=Math.max(0,Math.min(r.top,innerHeight-r.height))+'px'}
+function twShow(v){twOpen=v;$('tw').classList.toggle('hidden',!v);
+ if(v&&!twPlaced){twPlaced=true;const cr=$('cv').getBoundingClientRect();$('tw').style.left=Math.max(8,cr.right-262)+'px';$('tw').style.top=Math.max(8,cr.top+44)+'px';clampTw()}
+ if(!v){hl=null;redraw()}else renderTable()}
+function pickX(x){const st=+$('tstep').value,xs=Math.round(Math.round(x/st)*st*1000)/1000;let a=+$('tfrom').value,b=+$('tto').value;
+ if(xs<Math.min(a,b)||xs>Math.max(a,b)){$('tfrom').value=Math.floor(xs-5);$('tto').value=Math.ceil(xs+5)}
+ hl={x:xs};twShow(true);renderTable();redraw();const tr=$('twt').querySelector('tr.sel');if(tr)$('twt').scrollTop=tr.offsetTop-$('twt').clientHeight/2}
+$('tbtn').onclick=()=>twShow(!twOpen);$('twx').onclick=()=>twShow(false);
+$('twmin').onclick=()=>$('twb').classList.toggle('hidden');
+['tstep','tfrom','tto'].forEach(i=>$(i).oninput=renderTable);
+$('twt').addEventListener('pointerover',e=>{const tr=e.target.closest('tr');if(!tr)return;hl={x:+tr.dataset.x};$('twt').querySelectorAll('tr.sel').forEach(r=>r.classList.remove('sel'));tr.classList.add('sel');redraw()});
+$('twt').addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){hl=null;$('twt').querySelectorAll('tr.sel').forEach(r=>r.classList.remove('sel'));redraw()}});
+$('twh').onpointerdown=e=>{if(e.target.closest('button'))return;const w=$('tw'),r=w.getBoundingClientRect(),ox=e.clientX-r.left,oy=e.clientY-r.top,hd=$('twh');hd.setPointerCapture(e.pointerId);
+ const mv=ev=>{w.style.left=Math.max(0,Math.min(ev.clientX-ox,innerWidth-w.offsetWidth))+'px';w.style.top=Math.max(0,Math.min(ev.clientY-oy,innerHeight-w.offsetHeight))+'px'};
+ const up=()=>{hd.removeEventListener('pointermove',mv);hd.removeEventListener('pointerup',up)};hd.addEventListener('pointermove',mv);hd.addEventListener('pointerup',up)};
+addEventListener('resize',()=>{if(twOpen)clampTw()});
+let dn=null;
+cv.addEventListener('pointerdown',e=>{dn={x:e.clientX,y:e.clientY,m:ptrs.size>1}});
+cv.addEventListener('pointerup',e=>{if(!dn||dn.m||Math.hypot(e.clientX-dn.x,e.clientY-dn.y)>5)return;dn=null;
+ const r=cv.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top,x=V.cx+(px-W/2)/V.s,y=T[type].f(x,P);
+ if(isFinite(y)&&Math.abs(Y(y)-py)<14)pickX(x)});
+renderTex($('tw'));
+const NAV=[['lab','Lab'],['materi','Materi'],['evaluasi','Evaluasi'],['refleksi','Refleksi']];
+NAV.forEach(([v,l])=>{const b=document.createElement('button');b.className='tab';b.dataset.v=v;b.textContent=l;b.onclick=()=>go(v);$('nav').appendChild(b)});
+function go(v){NAV.forEach(([n])=>$('v-'+n).classList.toggle('hidden',n!==v));
+ document.querySelectorAll('#nav .tab').forEach(e=>e.classList.toggle('on',e.dataset.v===v));
+ $('modes').style.display=v==='lab'?'flex':'none';$('tw').classList.toggle('hidden',!(v==='lab'&&twOpen));if(v==='lab')render();scrollTo(0,0)}
+const MAT=[
+ ['quad','Fungsi Kuadrat',['Bentuk puncak','$f(x)=a(x-h)^2+k$'],['Bentuk standar','$f(x)=ax^2+bx+c$ dengan $b=-2ah$ dan $c=ah^2+k$'],['Diskriminan','$D=b^2-4ac=-4ak$ ; $D>0$ dua akar, $D=0$ satu akar, $D<0$ tanpa akar real'],['Sumbu simetri &amp; puncak (bentuk standar)','$x=-\\dfrac{b}{2a}$ ; $\\left(-\\dfrac{b}{2a},\\,-\\dfrac{D}{4a}\\right)$'],['Titik puncak / sumbu simetri','$(h,\\,k)$ ; $x=h$'],['Domain','$\\mathbb{R}$'],['Range','$y\\geq k$ jika $a>0$ ; $y\\leq k$ jika $a<0$'],['Titik potong sumbu $x$','$x=h\\pm\\sqrt{-\\dfrac{k}{a}}$ jika $-\\dfrac{k}{a}\\geq 0$'],['Titik potong sumbu $y$','$(0,\\,ah^2+k)$']],
+ ['abs','Fungsi Nilai Mutlak',['Bentuk umum','$f(x)=a\\left|x-h\\right|+k$'],['Titik sudut','$(h,\\,k)$'],['Domain','$\\mathbb{R}$'],['Range','$y\\geq k$ jika $a>0$ ; $y\\leq k$ jika $a<0$'],['Titik potong sumbu $x$','$x=h\\pm\\left(-\\dfrac{k}{a}\\right)$ jika $-\\dfrac{k}{a}\\geq 0$'],['Titik potong sumbu $y$','$(0,\\,a\\left|h\\right|+k)$']],
+ ['rat','Fungsi Rasional',['Bentuk umum','$f(x)=\\dfrac{a}{x-h}+k$'],['Asimtot tegak','$x=h$'],['Asimtot datar','$y=k$'],['Domain','$x\\neq h$'],['Range','$y\\neq k$'],['Titik potong sumbu $x$','$\\left(h-\\dfrac{a}{k},\\,0\\right)$ jika $k\\neq 0$'],['Titik potong sumbu $y$','$\\left(0,\\,k-\\dfrac{a}{h}\\right)$ jika $h\\neq 0$'],['Bentuk umum (pembilang &amp; penyebut linear)','$f(x)=\\dfrac{ax+b}{cx+d}$ dengan $c\\neq 0$ dan $ad-bc\\neq 0$'],['Asimtot (bentuk umum)','tegak $x=-\\dfrac{d}{c}$ ; datar $y=\\dfrac{a}{c}$'],['Domain &amp; range (bentuk umum)','$x\\neq -\\dfrac{d}{c}$ ; $y\\neq \\dfrac{a}{c}$'],['Fungsi invers','$f^{-1}(x)=\\dfrac{-dx+b}{cx-a}$ ; asimtot tegak dan datar saling bertukar'],['Kasus khusus','$c=0$: fungsi linear ; $ad-bc=0$: konstan dengan lubang di $x=-\\dfrac{d}{c}$'],['Asimtot miring','$f(x)=\\dfrac{ax^2+bx+c}{px+q}$, $a\\neq 0$, memiliki asimtot miring $y=mx+n$ (hasil bagi pembagian polinomial)']],
+ ['irr','Fungsi Irasional',['Bentuk umum','$f(x)=a\\sqrt{x-h}+k$'],['Syarat bentuk akar','$x-h\\geq 0$'],['Titik awal','$(h,\\,k)$'],['Domain','$x\\geq h$'],['Range','$y\\geq k$ jika $a>0$ ; $y\\leq k$ jika $a<0$'],['Titik potong sumbu $x$','$x=h+\\left(\\dfrac{k}{a}\\right)^{2}$ jika $-\\dfrac{k}{a}\\geq 0$'],['Titik potong sumbu $y$','$(0,\\,a\\sqrt{-h}+k)$ jika $h\\leq 0$']],
+ ['exp','Fungsi Eksponen',['Bentuk umum','$f(x)=a\\cdot b^{x-h}+k$, $b>0$, $b\\neq 1$'],['Jenis','$b>1$ pertumbuhan ; $0<b<1$ peluruhan'],['Asimtot datar','$y=k$'],['Domain','$\\mathbb{R}$'],['Range','$y>k$ jika $a>0$ ; $y<k$ jika $a<0$'],['Titik potong sumbu $x$','$x=h+\\log_b\\left(-\\dfrac{k}{a}\\right)$ jika $-\\dfrac{k}{a}>0$'],['Titik potong sumbu $y$','$(0,\\,a\\cdot b^{-h}+k)$']],
+ ['log','Fungsi Logaritma',['Bentuk umum','$f(x)=a\\cdot\\log_b(x-h)+k$'],['Syarat numerus','$x-h>0$'],['Asimtot tegak','$x=h$'],['Domain','$x>h$'],['Range','$\\mathbb{R}$'],['Titik potong sumbu $x$','$\\left(h+b^{-k/a},\\,0\\right)$'],['Titik potong sumbu $y$','$(0,\\,a\\log_b(-h)+k)$ jika $h<0$'],['Hubungan invers','$y=b^x$ dan $y=\\log_b x$ simetris terhadap $y=x$']]
+];
+let matPage=0;
+const SUM=[['Kuadrat','—','$\\mathbb{R}$','$y\\geq k$'],['Nilai Mutlak','—','$\\mathbb{R}$','$y\\geq k$'],['Rasional','$x=h$ ; $y=k$','$x\\neq h$','$y\\neq k$'],['Irasional','—','$x\\geq h$','$y\\geq k$'],['Eksponen','$y=k$','$\\mathbb{R}$','$y>k$'],['Logaritma','$x=h$','$x>h$','$\\mathbb{R}$']];
+function buildMateri(){
+ const pages=[];
+ pages.push(['Kunci Transformasi',HT(`<div class="text-sm space-y-3"><p>Semua fungsi memakai bentuk transformasi standar dengan tiga parameter:</p>
+ <p>• <b>$a$</b>: melebarkan atau menyempitkan grafik (dilatasi); jika $a<0$ grafik dicerminkan terhadap sumbu $x$.</p>
+ <p>• <b>$h$</b>: menggeser grafik <b>horizontal</b>. Nilai $h>0$ ke kanan, $h<0$ ke kiri.</p>
+ <p>• <b>$k$</b>: menggeser grafik <b>vertikal</b>. Nilai $k>0$ ke atas, $k<0$ ke bawah.</p>
+ <p>Mengapa $x-h$ menggeser ke <b>kanan</b>? Nilai khusus fungsi induk terjadi saat $x=0$; pada fungsi bertransformasi, nilai itu terjadi saat $x-h=0$, yaitu $x=h$.</p>
+ <p>Asimtot ikut bergeser: asimtot tegak di $x=h$ dan asimtot datar di $y=k$.</p></div>`)]);
+ MAT.forEach(([t,n,...r])=>pages.push([n,r.map(([l,v])=>`<div class="mt"><small>${HT(l)}</small>${HT(v)}</div>`).join('')+`<button class="tab mt-4" data-lab="${t}">Coba di Lab →</button>`]));
+ pages.push(['Ringkasan Karakteristik',`<div style="overflow-x:auto"><table class="w-full text-sm" style="min-width:420px"><tr style="text-align:left;color:var(--mut)"><th class="p-2">Fungsi</th><th>Asimtot</th><th>Domain</th><th>Range (${HT('$a>0$')})</th></tr>${SUM.map(r=>`<tr style="border-top:1px solid var(--line)">${r.map((x,i)=>`<td class="p-2 ${i?'':'font-semibold'}">${HT(x)}</td>`).join('')}</tr>`).join('')}</table></div>`]);
+ const n=pages.length;
+ $('v-materi').innerHTML=`<div class="max-w-2xl mx-auto"><div class="flex justify-between text-xs mb-2" style="color:var(--mut)"><span>Materi</span><span id="mpg"></span></div>
+ <div class="lbar" style="background:var(--line);max-width:none;margin:0 0 14px"><i id="mbar" style="background:var(--acc)"></i></div>
+ <div class="card p-5" style="min-height:340px"><h2 class="text-lg font-extrabold mb-3" id="mtitle"></h2><div id="mcont"></div></div>
+ <div class="flex items-center justify-between mt-3"><button class="tab" id="mprev">← Kembali</button><div class="flex gap-1" id="mdots"></div><button class="tab on" id="mnext">Lanjut →</button></div></div>`;
+ $('mdots').innerHTML=pages.map((p,i)=>`<button data-p="${i}" aria-label="Halaman ${i+1}" style="width:9px;height:9px;border-radius:99px"></button>`).join('');
+ const show=p=>{matPage=Math.max(0,Math.min(n-1,p));const [t,b]=pages[matPage];
+  $('mtitle').textContent=t;$('mcont').innerHTML=b;renderTex($('mcont'));
+  $('mpg').textContent=`Halaman ${matPage+1} / ${n}`;$('mbar').style.width=(matPage+1)/n*100+'%';
+  $('mprev').disabled=matPage===0;$('mnext').disabled=matPage===n-1;$('mprev').style.opacity=matPage===0?.4:1;$('mnext').style.opacity=matPage===n-1?.4:1;
+  document.querySelectorAll('#mdots button').forEach((d,i)=>d.style.background=i===matPage?'var(--acc)':'var(--line)');
+  document.querySelectorAll('[data-lab]').forEach(b=>b.onclick=()=>{mode!=='sandbox'&&setMode('sandbox');go('lab');setType(b.dataset.lab)});
+  scrollTo(0,0)};
+ $('mprev').onclick=()=>show(matPage-1);$('mnext').onclick=()=>show(matPage+1);
+ document.querySelectorAll('#mdots button').forEach(d=>d.onclick=()=>show(+d.dataset.p));
+ show(matPage);
+}
+const Q=[
+ ['Titik puncak grafik $f(x)=2(x-3)^2+5$ adalah ...',['$(-3,\\,5)$','$(3,\\,5)$','$(3,\\,-5)$','$(5,\\,3)$'],1,'Dengan bentuk $a(x-h)^2+k$, titik puncaknya $(h,\\,k)=(3,\\,5)$.'],
+ ['Persamaan asimtot tegak dan datar dari $f(x)=\\dfrac{2}{x+1}-4$ berturut-turut adalah ...',['$x=1$ dan $y=-4$','$x=-1$ dan $y=-4$','$x=-1$ dan $y=4$','$x=4$ dan $y=-1$'],1,'$x+1=x-(-1)$ sehingga $h=-1$, dan $k=-4$.'],
+ ['Domain fungsi $f(x)=3\\sqrt{x-2}+1$ adalah ...',['$x\\leq 2$','$x>2$','$x\\geq 2$','$x\\geq 1$'],2,'Syarat akar: $x-2\\geq 0$, sehingga $x\\geq 2$.'],
+ ['Grafik $f(x)=\\left|x-2\\right|-3$ memotong sumbu $y$ di ...',['$(0,\\,-1)$','$(0,\\,-5)$','$(0,\\,1)$','$(0,\\,-3)$'],0,'$f(0)=\\left|0-2\\right|-3=2-3=-1$.'],
+ ['Range fungsi $f(x)=2^{x-1}+3$ adalah ...',['$y>3$','$y\\geq 3$','$y>-1$','$\\mathbb{R}$'],0,'Asimtot datar $y=k=3$ dan $a>0$, sehingga $y>3$.'],
+ ['Asimtot tegak fungsi $f(x)=\\log_2(x+3)$ adalah ...',['$x=3$','$y=-3$','$x=-3$','$y=3$'],2,'Numerus $x+3>0$, batasnya $x=-3$.'],
+ ['Grafik $y=(x+2)^2-1$ diperoleh dari $y=x^2$ dengan menggeser ...',['2 satuan ke kanan, 1 ke bawah','2 satuan ke kiri, 1 ke atas','2 satuan ke kiri, 1 ke bawah','2 satuan ke kanan, 1 ke atas'],2,'$x+2=x-(-2)$ menggeser 2 ke kiri; $k=-1$ menggeser 1 ke bawah.'],
+ ['Nilai ekstrem dari $f(x)=-2(x-1)^2+6$ adalah ...',['maksimum $6$','minimum $6$','maksimum $1$','minimum $-2$'],0,'Karena $a=-2<0$, parabola terbuka ke bawah sehingga bernilai maksimum $k=6$.'],
+ ['Titik potong sumbu $x$ dari $f(x)=\\dfrac{3}{x-1}-1$ adalah ...',['$(4,\\,0)$','$(-2,\\,0)$','$(2,\\,0)$','$(1,\\,0)$'],0,'$\\dfrac{3}{x-1}=1$ sehingga $x-1=3$, jadi $x=4$.'],
+ ['Bentuk standar dari $f(x)=2(x-1)^2-3$ adalah ...',['$2x^2-4x-1$','$2x^2+4x-1$','$2x^2-4x-3$','$2x^2-2x-1$'],0,'$b=-2ah=-4$ dan $c=ah^2+k=2-3=-1$, sehingga $f(x)=2x^2-4x-1$.'],
+ ['Asimtot tegak dan asimtot datar dari $f(x)=\\dfrac{2x+1}{x-3}$ berturut-turut adalah ...',['$x=3$ dan $y=2$','$x=-3$ dan $y=2$','$x=3$ dan $y=1$','$x=2$ dan $y=3$'],0,'Penyebut nol di $x=3$; asimtot datar $y=\\dfrac{a}{c}=\\dfrac{2}{1}=2$.'],
+ ['Asimtot miring dari $f(x)=\\dfrac{x^2+3x+1}{x+1}$ adalah ...',['$y=x+3$','$y=x+2$','$y=x+1$','$y=2x$'],1,'$x^2+3x+1=(x+1)(x+2)-1$, sehingga hasil baginya $x+2$.'],
+ ['Fungsi $f(x)=\\dfrac{2x+4}{x+2}$ memiliki sifat ...',['asimtot tegak $x=-2$','konstan $y=2$ dengan lubang di $x=-2$','asimtot datar $y=-2$','asimtot miring $y=2x$'],1,'$ad-bc=2\\cdot 2-4\\cdot 1=0$, sehingga $f(x)=2$ untuk $x\\neq -2$.']
+];
+function buildEval(){
+ let h='<div class="card p-4 mb-3"><h2 class="font-extrabold">Evaluasi Pemahaman</h2><p class="text-sm" style="color:var(--mut)">Pilih satu jawaban untuk tiap soal, lalu tekan "Periksa Jawaban".</p></div>';
+ Q.forEach(([q,o,c,e],i)=>{h+=`<div class="card q" id="q${i}"><p class="font-semibold mb-2">${i+1}. ${HT(q)}</p>${o.map((x,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${HT(x)}</label>`).join('')}<p class="exp hidden text-sm mt-2 p-2 rounded-lg" style="background:var(--bg)">${HT('<b>Pembahasan:</b> '+e)}</p></div>`});
+ h+='<div class="flex items-center gap-3"><button id="chk" class="tab on">Periksa Jawaban</button><button id="rst" class="tab">Ulangi</button><b id="score"></b></div>';
+ $('v-evaluasi').innerHTML=h;renderTex($('v-evaluasi'));
+ $('chk').onclick=()=>{let sc=0;Q.forEach(([q,o,c],i)=>{const box=$('q'+i),sel=box.querySelector('input:checked');box.querySelectorAll('label').forEach((l,j)=>{l.classList.remove('good','bad');if(j===c)l.classList.add('good');else if(sel&&+sel.value===j)l.classList.add('bad')});box.querySelector('.exp').classList.remove('hidden');if(sel&&+sel.value===c)sc++});
+  $('score').textContent=`Skor: ${sc} / ${Q.length} (${Math.round(sc/Q.length*100)})`};
+ $('rst').onclick=buildEval;
+}
+const RF=['Pola apa yang kamu temukan saat mengubah nilai $h$? Bagaimana arah pergeserannya?','Apa pengaruh nilai $k$ terhadap titik puncak dan asimtot grafik?','Fungsi mana yang menurutmu paling sulit dipahami, dan mengapa?','Bagian mana yang masih membingungkan dan ingin kamu tanyakan?'];
+function buildRef(){
+ let sv={};try{sv=JSON.parse(localStorage.getItem('grafikalab-ref')||'{}')}catch(e){}
+ $('v-refleksi').innerHTML='<div class="card p-4 mb-3"><h2 class="font-extrabold">Refleksi Belajar</h2><p class="text-sm" style="color:var(--mut)">Tuliskan temuan dan pemahamanmu dengan kata-katamu sendiri.</p></div>'+RF.map((q,i)=>`<div class="card p-4 mb-3"><p class="font-semibold mb-2">${i+1}. ${HT(q)}</p><textarea id="r${i}">${(sv['r'+i]||'').replace(/</g,'&lt;')}</textarea></div>`).join('')+'<button id="rsave" class="tab on">Simpan Refleksi</button> <span id="rmsg" class="text-sm"></span>';
+ renderTex($('v-refleksi'));
+ $('rsave').onclick=()=>{const o={};RF.forEach((q,i)=>o['r'+i]=$('r'+i).value);let ok=true;try{localStorage.setItem('grafikalab-ref',JSON.stringify(o))}catch(e){ok=false}$('rmsg').textContent=ok?'✅ Tersimpan di perangkat ini.':'Penyimpanan tidak tersedia di peramban ini.'};
+}
+$('mbody').innerHTML=HT(`<div class="flex justify-between items-start"><h2 class="text-lg font-extrabold">Tentang GrafikaLab</h2><button class="tab" id="mclose">✕</button></div>
+<div class="mt"><small>Pengembang</small><b>I Made Agus Suputrayasa</b><br>Pendidik matematika dan pengembang media pembelajaran interaktif.</div>
+<div class="mt"><small>Petunjuk eksplorasi</small><ol class="list-decimal pl-5 space-y-1"><li>Pilih jenis fungsi pada tab di atas kanvas.</li><li>Geser slider $a$, $h$, $k$ (dan $b$) lalu amati perubahan grafik.</li><li>Bandingkan dengan <i>ghost graph</i> (garis putus-putus abu-abu) sebagai fungsi induk.</li><li>Baca panel analisis: domain, range, titik potong, titik puncak, dan asimtot. Klik persamaan untuk melihat parameter mentahnya.</li><li>Tekan <b>⊞ Tabel</b> atau klik langsung pada kurva untuk membuka tabel nilai $(x,\\,y)$ yang bisa digeser; arahkan kursor ke sebuah baris untuk menyorot titiknya pada grafik.</li><li>Gunakan <b>Misi</b> dan <b>Tebak Fungsi</b> untuk menguji dugaanmu.</li><li>Lanjutkan ke tab <b>Materi</b>, <b>Evaluasi</b>, dan <b>Refleksi</b>.</li></ol></div>
+<div class="mt"><small>Metodologi: Pembelajaran Penemuan Terbimbing (Guided Discovery)</small>Siswa menemukan sendiri konsep melalui lima tahap: <b>(1) Mengamati</b> perubahan grafik, <b>(2) Menduga</b> pengaruh tiap parameter, <b>(3) Menguji</b> dugaan dengan slider dan misi, <b>(4) Menyimpulkan</b> aturan transformasi, dan <b>(5) Merefleksi</b> pemahaman. Contohnya, dugaan "nilai $h$ positif menggeser grafik ke kanan" diuji lewat bentuk $f(x)=a(x-h)^2+k$.</div>`);
+$('fs').onclick=()=>{try{const d=document,e=d.documentElement;if(d.fullscreenElement||d.webkitFullscreenElement)(d.exitFullscreen||d.webkitExitFullscreen).call(d);else Promise.resolve((e.requestFullscreen||e.webkitRequestFullscreen).call(e)).catch(()=>{})}catch(x){}};
+const modal=v=>$('modal').classList.toggle('hidden',!v);
+$('info').onclick=()=>modal(1);$('mclose').onclick=()=>modal(0);$('modal').onclick=e=>{if(e.target.id==='modal')modal(0)};
+renderTex($('mbody'));
+(function(){let p=0;const iv=setInterval(()=>{p=Math.min(100,p+Math.random()*9+3);$('lb').style.width=p+'%';$('lt').textContent='Memuat laboratorium… '+Math.floor(p)+'%';if(p>=100){clearInterval(iv);$('lt').textContent='Siap digunakan';$('go').classList.remove('hidden')}},120)})();
+$('go').onclick=()=>{try{const d=document.documentElement,rf=d.requestFullscreen||d.webkitRequestFullscreen;if(rf&&!(document.fullscreenElement||document.webkitFullscreenElement))Promise.resolve(rf.call(d)).catch(()=>{})}catch(e){}$('splash').classList.add('out');setTimeout(()=>$('splash').remove(),700);modal(1)};
+setType('quad');setMode('sandbox');buildMateri();buildEval();buildRef();go('lab');
+</script>
 </body>
 </html>
